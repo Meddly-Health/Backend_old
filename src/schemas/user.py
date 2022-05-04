@@ -39,9 +39,11 @@ class UserModel(BaseModel):
                 "created_at": "2022-04-12T03:31:19.122000",
                 "updated_at": "2022-04-12T03:31:19.122000",
                 "diseases": ["diabetes", "hipertension"],
-                "supervisors": ["7TKUuX29JFhbT6t9mnVARy70tXS3", "7TKUuX29JFhbT6t9mnVARy70tXS4"],
+                "supervisors": [
+                    "7TKUuX29JFhbT6t9mnVARy70tXS3",
+                    "7TKUuX29JFhbT6t9mnVARy70tXS4",
+                ],
                 "supervised": ["7TKUuX29JFhbT6t9mnVARy70tXS5"],
-
                 "first_name": "Ignacio",
                 "last_name": "Pieve Roiger",
                 "height": 1.70,
