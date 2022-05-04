@@ -85,3 +85,19 @@ async def update_user(
 
     await db["user"].update_one({"user_id": user["user_id"]}, {"$set": new_user})
     return new_user
+
+
+@router.delete(
+    "/", status_code=200, summary="Delete user"
+)
+async def update_user(
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
+):
+    """
+    Elimina completamente a un usuario
+    """
+    # TODO: Eliminar todos los datos del usuario (y sus relaciones)
+
+    await db["user"].delete_one({"user_id": user["user_id"]})
+    return {"status": "ok"}
