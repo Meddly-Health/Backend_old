@@ -87,9 +87,7 @@ async def update_user(
     return new_user
 
 
-@router.delete(
-    "/", status_code=200, summary="Delete user"
-)
+@router.delete("/", status_code=200, summary="Delete user")
 async def update_user(
     user=Depends(auth.authenticate),
     db=Depends(Database.get_db),
