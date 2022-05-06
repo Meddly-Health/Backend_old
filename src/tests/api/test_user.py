@@ -11,11 +11,10 @@ def test_create_user():
             "height": 1.70,
             "weight": 67,
             "sex": "M",
-            "birth": "2000-02-10"
+            "birth": "2000-02-10",
         }
 
         # response = client.post("/user/", json=body)
         # assert response.status_code == HTTP_201_CREATED
         # for value in body:
         #     assert body[value] == response.json()[value]
-
