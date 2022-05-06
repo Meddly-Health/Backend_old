@@ -35,7 +35,6 @@ class Database:
             }
             await Database.db_client[f"{db_name}_test"]["user"].insert_one(user)
 
-
     @staticmethod
     async def close_db():
         """Close database connection."""

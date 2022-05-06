@@ -27,8 +27,8 @@ def test_get_user(client: TestClient):
 
 def test_update_user(client: TestClient):
     new_sex = "F"
-    body['sex'] = new_sex
-    response = client.patch("/user/", json={'sex': new_sex})
+    body["sex"] = new_sex
+    response = client.patch("/user/", json={"sex": new_sex})
     assert response.status_code == HTTP_200_OK
     for value in body:
         assert body[value] == response.json()[value]
