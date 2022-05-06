@@ -1,8 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
+
 from app import app
-from dependencies import auth
 from database import Database
+from dependencies import auth
 
 
 def override_auth():

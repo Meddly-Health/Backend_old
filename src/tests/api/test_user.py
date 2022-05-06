@@ -1,6 +1,7 @@
-from starlette.testclient import TestClient
-from app import app
 from starlette.status import HTTP_200_OK, HTTP_201_CREATED
+from starlette.testclient import TestClient
+
+from app import app
 
 
 def test_create_user():
