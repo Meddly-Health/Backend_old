@@ -32,7 +32,6 @@ async def authenticate(
 
     user = await db["user"].find_one({"user_id": decoded_token["user_id"]})
     if not user:
-        # TODO: Define user creation
         user = {
             "user_id": decoded_token["user_id"],
             "email": decoded_token["email"],

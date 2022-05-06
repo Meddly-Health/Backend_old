@@ -34,12 +34,14 @@ async def create_user(
     - **sex**
     - **birth**
     """
+    old_created_date = await db["user"].find_one({"user_id": user["user_id"]}, {"_id": 0})
+    old_created_date = old_created_date['created_at']
 
     user_data = jsonable_encoder(user_data)
     new_user = {
         "user_id": user["user_id"],
         "email": user["email"],
-        "created_at": datetime.datetime.now(),
+        'created_at': old_created_date,
         "updated_at": datetime.datetime.now(),
         "diseases": [],
         "supervisors": [],
@@ -88,7 +90,7 @@ async def update_user(
 
 
 @router.delete("/", status_code=200, summary="Delete user")
-async def update_user(
+async def delete_user(
     user=Depends(auth.authenticate),
     db=Depends(Database.get_db),
 ):
