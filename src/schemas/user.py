@@ -4,6 +4,21 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 
+class SupervisorModel(BaseModel):
+    email: EmailStr
+    first_name: str | None
+    last_name: str | None
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "email": "example@test.com",
+                "first_name": "John",
+                "last_name": "Doe",
+            }
+        }
+
+
 class UserUpdateModel(BaseModel):
     first_name: str | None
     last_name: str | None
@@ -20,8 +35,8 @@ class UserModel(BaseModel):
     created_at: datetime.datetime
     updated_at: datetime.datetime
     diseases: list[str]
-    supervisors: list[str]
-    supervised: list[str]
+    supervisors: list[SupervisorModel]
+    supervised: list[SupervisorModel]
 
     # Atributos opcionales
     first_name: str | None
@@ -40,10 +55,24 @@ class UserModel(BaseModel):
                 "updated_at": "2022-04-12T03:31:19.122000",
                 "diseases": ["diabetes", "hipertension"],
                 "supervisors": [
-                    "7TKUuX29JFhbT6t9mnVARy70tXS3",
-                    "7TKUuX29JFhbT6t9mnVARy70tXS4",
+                    {
+                        "email": "example@test.com",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                    },
+                    {
+                        "email": "example@test.com",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                    },
                 ],
-                "supervised": ["7TKUuX29JFhbT6t9mnVARy70tXS5"],
+                "supervised": [
+                    {
+                        "email": "example@test.com",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                    },
+                ],
                 "first_name": "Ignacio",
                 "last_name": "Pieve Roiger",
                 "height": 1.70,

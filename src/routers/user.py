@@ -15,7 +15,6 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
     """
     Obtener la información de un usuario
     """
-    # user = await db["user"].find_one({"user_id": user["user_id"]})
     pipeline = [
         {"$match": {"user_id": user["user_id"]}},
         {
@@ -25,15 +24,15 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
                 "foreignField": "_id",
                 "as": "supervised",
                 "pipeline": [
-                    {"$project": {"email": 1, "_id": 0}},
+                    {"$project": {"email": 1, "first_name": 1, "last_name": 1, "_id": 0}},
                 ],
             }
         },
+        {"$project": {"_id": 0}},
     ]
-    a = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
-    print(a)
+    user = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
 
-    return {}
+    return user
 
 
 @router.post("/", response_model=UserModel, status_code=201, summary="Update user data")
