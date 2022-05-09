@@ -24,7 +24,14 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
                 "foreignField": "_id",
                 "as": "supervised",
                 "pipeline": [
-                    {"$project": {"email": 1, "first_name": 1, "last_name": 1, "_id": 0}},
+                    {
+                        "$project": {
+                            "email": 1,
+                            "first_name": 1,
+                            "last_name": 1,
+                            "_id": 0,
+                        }
+                    },
                 ],
             }
         },
