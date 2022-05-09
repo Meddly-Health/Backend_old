@@ -1,4 +1,4 @@
-name: Lint code using Black and isort
+name: Code Lint
 
 on:
   push:
