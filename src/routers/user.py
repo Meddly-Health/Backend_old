@@ -18,15 +18,17 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
     # user = await db["user"].find_one({"user_id": user["user_id"]})
     pipeline = [
         {"$match": {"user_id": user["user_id"]}},
-        {'$lookup': {
-            'from': 'user',
-            "localField": "supervised",
-            "foreignField": "_id",
-            "as": "supervised",
-            "pipeline": [
-                {"$project": {"email": 1, "_id": 0}},
-            ]
-        }}
+        {
+            "$lookup": {
+                "from": "user",
+                "localField": "supervised",
+                "foreignField": "_id",
+                "as": "supervised",
+                "pipeline": [
+                    {"$project": {"email": 1, "_id": 0}},
+                ],
+            }
+        },
     ]
     a = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
     print(a)
@@ -36,9 +38,9 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
 
 @router.post("/", response_model=UserModel, status_code=201, summary="Update user data")
 async def create_user(
-        user_data: UserUpdateModel,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user_data: UserUpdateModel,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo):
@@ -78,9 +80,9 @@ async def create_user(
     "/", response_model=UserModel, status_code=200, summary="Update user data"
 )
 async def update_user(
-        user_data: UserUpdateModel,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user_data: UserUpdateModel,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sin sobreescribirlos):
@@ -109,8 +111,8 @@ async def update_user(
 
 @router.delete("/", status_code=200, summary="Delete user")
 async def delete_user(
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Elimina completamente a un usuario
