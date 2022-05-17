@@ -25,7 +25,7 @@ class UserUpdateModel(BaseModel):
     height: float | None
     weight: float | None
     sex: str | None
-    birth: datetime.date | None
+    birth: datetime.datetime | None
 
 
 class UserModel(BaseModel):
@@ -44,7 +44,7 @@ class UserModel(BaseModel):
     height: float | None
     weight: float | None
     sex: str | None
-    birth: datetime.date | None
+    birth: datetime.datetime | None
 
     class Config:
         schema_extra = {
@@ -78,6 +78,6 @@ class UserModel(BaseModel):
                 "height": 1.70,
                 "weight": 67.0,
                 "sex": "M",
-                "birth": "2000-10-02",
+                "birth": "2022-04-12T03:31:19.122000",
             }
         }
