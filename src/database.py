@@ -25,7 +25,7 @@ class Database:
         if Database.testing:
             await Database.db_client.drop_database(f"{db_name}_test")
             user = {
-                "user_id": "test_id",
+                "_id": "test_id",
                 "email": "example@test.com",
                 "created_at": datetime.datetime.now(),
                 "updated_at": datetime.datetime.now(),
