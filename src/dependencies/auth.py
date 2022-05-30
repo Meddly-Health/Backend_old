@@ -13,8 +13,8 @@ firebase_admin.initialize_app(cred)
 
 
 async def authenticate(
-        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-        db=Depends(Database.get_db),
+    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    db=Depends(Database.get_db),
 ):
     """
     Authenticate a user with a Bearer token.
@@ -47,13 +47,13 @@ async def authenticate(
             "supervised": [],
         }
         await db["user"].insert_one(user)
-    return {"user_id": decoded_token["user_id"],
-            "email": decoded_token["email"]}
+    return {"user_id": decoded_token["user_id"], "email": decoded_token["email"]}
 
 
 async def authenticate_with_supervisor(
-        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-        db=Depends(Database.get_db), supervised_id: str | None = Header(default=None)
+    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    db=Depends(Database.get_db),
+    supervised_id: str | None = Header(default=None),
 ):
     """
     Authenticate a user with a Bearer token.
@@ -85,8 +85,7 @@ async def authenticate_with_supervisor(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User is not a supervisor of the supervised user",
             )
-        return {"user_id": user["user_id"],
-                "email": user["email"]}
+        return {"user_id": user["user_id"], "email": user["email"]}
 
     user = await db["user"].find_one({"_id": decoded_token["user_id"]})
     if not user:
@@ -100,7 +99,4 @@ async def authenticate_with_supervisor(
             "supervised": [],
         }
         await db["user"].insert_one(user)
-    return {"user_id": user["user_id"],
-            "email": user["email"]}
-
-
+    return {"user_id": user["user_id"], "email": user["email"]}

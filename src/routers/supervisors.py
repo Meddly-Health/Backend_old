@@ -10,11 +10,13 @@ from schemas.user import UserModel, UserUpdateModel
 router = APIRouter(prefix="/supervisors", tags=["User"])
 
 
-@router.delete("/supervisor/{supervisor_id}", status_code=200, summary="Delete supervisor")
+@router.delete(
+    "/supervisor/{supervisor_id}", status_code=200, summary="Delete supervisor"
+)
 async def delete_supervisor(
-        supervisor_id: str,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    supervisor_id: str,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Elimina un supervisor
@@ -31,11 +33,13 @@ async def delete_supervisor(
     return {"status": "ok"}
 
 
-@router.delete("/supervised/{supervised_id}", status_code=200, summary="Delete supervisor")
+@router.delete(
+    "/supervised/{supervised_id}", status_code=200, summary="Delete supervisor"
+)
 async def delete_supervised(
-        supervised_id: str,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    supervised_id: str,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Elimina un supervisor
