@@ -10,13 +10,13 @@ from schemas.user import UserModel, UserUpdateModel
 router = APIRouter(prefix="/user", tags=["User"])
 
 
-@router.get("/", status_code=200, summary="Get user data")
+@router.get("/", response_model=UserModel, status_code=200, summary="Get user data")
 async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db)):
     """
     Obtener la información de un usuario
     """
     pipeline = [
-        {"$match": {"user_id": user["user_id"]}},
+        {"$match": {"_id": user["user_id"]}},
         {
             "$lookup": {
                 "from": "user",
@@ -29,13 +29,12 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
                             "email": 1,
                             "first_name": 1,
                             "last_name": 1,
-                            "_id": 0,
+                            "_id": 1,
                         }
                     },
                 ],
             }
-        },
-        {"$project": {"_id": 0}},
+        }
     ]
     user = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
 
@@ -44,9 +43,9 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
 
 @router.post("/", response_model=UserModel, status_code=201, summary="Update user data")
 async def create_user(
-    user_data: UserUpdateModel,
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
+        user_data: UserUpdateModel,
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo):
@@ -58,14 +57,12 @@ async def create_user(
     - **sex**
     - **birth**
     """
-    old_created_date = await db["user"].find_one(
-        {"user_id": user["user_id"]}, {"_id": 0}
-    )
+    old_created_date = await db["user"].find_one({"_id": user["user_id"]})
     old_created_date = old_created_date["created_at"]
 
     user_data = jsonable_encoder(user_data)
     new_user = {
-        "user_id": user["user_id"],
+        "_id": user["user_id"],
         "email": user["email"],
         "created_at": old_created_date,
         "updated_at": datetime.datetime.now(),
@@ -78,7 +75,7 @@ async def create_user(
         if user_data[data] is not None:
             new_user[data] = user_data[data]
 
-    await db["user"].update_one({"user_id": user["user_id"]}, {"$set": new_user})
+    await db["user"].update_one({"_id": user["user_id"]}, {"$set": new_user})
     return new_user
 
 
@@ -86,9 +83,9 @@ async def create_user(
     "/", response_model=UserModel, status_code=200, summary="Update user data"
 )
 async def update_user(
-    user_data: UserUpdateModel,
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
+        user_data: UserUpdateModel,
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sin sobreescribirlos):
@@ -101,7 +98,7 @@ async def update_user(
     - **birth**
     """
 
-    new_user = await db["user"].find_one({"user_id": user["user_id"]}, {"_id": 0})
+    new_user = await db["user"].find_one({"_id": user["user_id"]})
 
     new_user_data = jsonable_encoder(user_data)
 
@@ -111,19 +108,19 @@ async def update_user(
 
     new_user["updated_at"] = datetime.datetime.now()
 
-    await db["user"].update_one({"user_id": user["user_id"]}, {"$set": new_user})
+    await db["user"].update_one({"_id": user["user_id"]}, {"$set": new_user})
     return new_user
 
 
 @router.delete("/", status_code=200, summary="Delete user")
 async def delete_user(
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
 ):
     """
     Elimina completamente a un usuario
     """
     # TODO: Eliminar todos los datos del usuario (y sus relaciones)
 
-    await db["user"].delete_one({"user_id": user["user_id"]})
+    await db["user"].delete_one({"_id": user["user_id"]})
     return {"status": "ok"}

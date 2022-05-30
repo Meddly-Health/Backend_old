@@ -1,7 +1,9 @@
 import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
+
+from schemas.utils import PyObjectId
 
 
 class SupervisorModel(BaseModel):
@@ -30,7 +32,7 @@ class UserUpdateModel(BaseModel):
 
 class UserModel(BaseModel):
     # Atributos obligatorios
-    user_id: str
+    sadsad: str = Field(alias="_id")
     email: EmailStr
     created_at: datetime.datetime
     updated_at: datetime.datetime
@@ -47,6 +49,7 @@ class UserModel(BaseModel):
     birth: datetime.datetime | None
 
     class Config:
+        allow_population_by_field_name = True
         schema_extra = {
             "example": {
                 "user_id": "7TKUuX29JFhbT6t9mnVARy70tXS2",
