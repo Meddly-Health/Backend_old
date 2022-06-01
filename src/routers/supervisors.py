@@ -79,15 +79,12 @@ async def accept_invitation(
 
         return {"status": "ok"}
 
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="User not found"
-    )
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
 
 async def generate_code(db):
     """
-        Generates a 10-character code and checks that it does not exist in the database
+    Generates a 10-character code and checks that it does not exist in the database
     """
 
     def generate():
