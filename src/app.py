@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 import config
 from database import Database
-from routers import test, user, supervisors
+from routers import supervisors, test, user
 
 app = FastAPI(**config.metadata)
 
