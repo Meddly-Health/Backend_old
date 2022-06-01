@@ -7,7 +7,6 @@ from firebase_admin import auth, credentials
 
 import config
 from database import Database
-
 from utils import generate_code
 
 cred = credentials.Certificate(config.firebase)
