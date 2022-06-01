@@ -35,8 +35,27 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
                 ],
             }
         },
+        {
+            "$lookup": {
+                "from": "user",
+                "localField": "supervisors",
+                "foreignField": "_id",
+                "as": "supervisors",
+                "pipeline": [
+                    {
+                        "$project": {
+                            "email": 1,
+                            "first_name": 1,
+                            "last_name": 1,
+                            "_id": 1,
+                        }
+                    },
+                ],
+            }
+        },
     ]
     user = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
+    print(user)
 
     return user
 

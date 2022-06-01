@@ -24,17 +24,6 @@ class Database:
 
         if Database.testing:
             await Database.db_client.drop_database(f"{db_name}_test")
-            user = {
-                "_id": "test_id",
-                "email": "example@test.com",
-                "created_at": datetime.datetime.now(),
-                "updated_at": datetime.datetime.now(),
-                "diseases": [],
-                "supervisors": [],
-                "supervised": [],
-                "invitation": "A1A-A1A1-A1A",
-            }
-            await Database.db_client[f"{db_name}_test"]["user"].insert_one(user)
 
     @staticmethod
     async def close_db():

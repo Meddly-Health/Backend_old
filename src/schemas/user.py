@@ -1,12 +1,9 @@
 import datetime
-from typing import Optional
-
 from pydantic import BaseModel, EmailStr, Field
-
-from schemas.utils import PyObjectId
 
 
 class SupervisorModel(BaseModel):
+    id: str = Field(alias="_id")
     email: EmailStr
     first_name: str | None
     last_name: str | None
@@ -32,7 +29,7 @@ class UserUpdateModel(BaseModel):
 
 class UserModel(BaseModel):
     # Atributos obligatorios
-    sadsad: str = Field(alias="_id")
+    id: str = Field(alias="_id")
     email: EmailStr
     created_at: datetime.datetime
     updated_at: datetime.datetime

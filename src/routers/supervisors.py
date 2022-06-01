@@ -21,8 +21,11 @@ async def delete_supervisor(
     """
     Elimina un supervisor
     """
-    supervisor = await db.get_supervisor(supervisor_id)
-    supervised = await db.get_supervised(user["user_id"])
+    supervisor = await db["user"].find_one({"_id": supervisor_id})
+    supervised = await db["user"].find_one({"_id": user["user_id"]})
+
+    # TODO: Checkear si el supervisado esta en la lista de supervisores
+    # TODO: Caso contrario, retornar 404
 
     supervised["supervisors"].remove(supervisor_id)
     supervisor["supervised"].remove(user["user_id"])
@@ -42,10 +45,13 @@ async def delete_supervised(
     db=Depends(Database.get_db),
 ):
     """
-    Elimina un supervisor
+    Elimina un supervisado
     """
-    supervisor = await db.get_supervisor(user["user_id"])
-    supervised = await db.get_supervised(supervised_id)
+    supervisor = await db["user"].find_one({"_id": user["user_id"]})
+    supervised = await db["user"].find_one({"_id": supervised_id})
+
+    # TODO: Checkear si el supervisado esta en la lista de supervisores
+    # TODO: Caso contrario, retornar 404
 
     supervised["supervisors"].remove(user["user_id"])
     supervisor["supervised"].remove(supervised_id)
@@ -66,6 +72,9 @@ async def accept_invitation(
     supervised = await db["user"].find_one({"_id": user["user_id"]})
 
     if supervisor:
+        # TODO: Checkear que el usuario no sea ya supervisor del otro usuario.
+        # TODO: Si se acepta muchas veces la invitacion, se agrega varias veces en la tabla.
+
         supervisor["invitation"] = await generate_code(db)
         supervisor["supervised"].append(supervised["_id"])
         supervised["supervisors"].append(supervisor["_id"])
