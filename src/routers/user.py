@@ -57,8 +57,9 @@ async def create_user(
     - **sex**
     - **birth**
     """
-    old_created_date = await db["user"].find_one({"_id": user["user_id"]})
-    old_created_date = old_created_date["created_at"]
+    old_user = await db["user"].find_one({"_id": user["user_id"]})
+    old_created_date = old_user["created_at"]
+    old_invitation = old_user["invitation"]
 
     user_data = jsonable_encoder(user_data)
     new_user = {
@@ -69,13 +70,14 @@ async def create_user(
         "diseases": [],
         "supervisors": [],
         "supervised": [],
+        "invitation": old_invitation,
     }
 
     for data in user_data:
         if user_data[data] is not None:
             new_user[data] = user_data[data]
 
-    await db["user"].update_one({"_id": user["user_id"]}, {"$set": new_user})
+    await db["user"].replace_one({"_id": user["user_id"]}, new_user)
     return new_user
 
 

@@ -1,7 +1,3 @@
-import datetime
-import random
-import string
-
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from starlette import status
@@ -9,6 +5,8 @@ from starlette import status
 from database import Database
 from dependencies import auth
 from schemas.user import UserModel, UserUpdateModel
+
+from utils import generate_code
 
 router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
 
@@ -79,26 +77,3 @@ async def accept_invitation(
         return {"status": "ok"}
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-
-async def generate_code(db):
-    """
-    Generates a 10-character code and checks that it does not exist in the database
-    """
-
-    def generate():
-        generated_code = []
-        for k in [3, 4, 3]:
-            generated_code.append("".join(random.choices(string.ascii_uppercase, k=k)))
-        generated_code = "-".join(generated_code).upper()
-        return generated_code
-
-    def is_repeated(code_to_check):
-        code_is_repeated = await db["user"].find_one({"invitation": code_to_check})
-        return code_is_repeated is not None
-
-    code = generate()
-    while is_repeated(code):
-        code = generate()
-
-    return code
