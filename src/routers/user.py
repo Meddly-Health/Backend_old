@@ -103,7 +103,7 @@ async def update_user(
     new_user_data = jsonable_encoder(user_data)
 
     for data in new_user_data:
-        if new_user_data[data] is not None:
+        if new_user_data[data]:
             new_user[data] = new_user_data[data]
 
     new_user["updated_at"] = datetime.datetime.now()

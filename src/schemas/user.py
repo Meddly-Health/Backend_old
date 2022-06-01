@@ -39,6 +39,7 @@ class UserModel(BaseModel):
     diseases: list[str]
     supervisors: list[SupervisorModel]
     supervised: list[SupervisorModel]
+    invitation: str
 
     # Atributos opcionales
     first_name: str | None
@@ -76,6 +77,7 @@ class UserModel(BaseModel):
                         "last_name": "Doe",
                     },
                 ],
+                "invitation": "A1A1-A1A1-A1A1",
                 "first_name": "Ignacio",
                 "last_name": "Pieve Roiger",
                 "height": 1.70,
