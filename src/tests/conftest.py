@@ -13,8 +13,7 @@ from utils import generate_code
 Database.testing = True
 
 
-async def override_auth(cred: str = Header(default=None),
-                        db=Depends(Database.get_db)):
+async def override_auth(cred: str = Header(default=None), db=Depends(Database.get_db)):
     user = await db["user"].find_one({"_id": cred})
     if not user:
         user = {
