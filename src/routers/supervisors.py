@@ -34,7 +34,7 @@ async def delete_supervisor(
 
 
 @router.delete(
-    "/supervised/{supervised_id}", status_code=200, summary="Delete supervisor"
+    "/supervised/{supervised_id}", status_code=200, summary="Delete supervised"
 )
 async def delete_supervised(
     supervised_id: str,
@@ -66,7 +66,7 @@ async def accept_invitation(
     supervised = await db["user"].find_one({"_id": user["user_id"]})
 
     if supervisor:
-        supervisor["invitation"] = generate_code(db)
+        supervisor["invitation"] = await generate_code(db)
         supervisor["supervised"].append(supervised["_id"])
         supervised["supervisors"].append(supervisor["_id"])
 
