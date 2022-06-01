@@ -32,6 +32,7 @@ class Database:
                 "diseases": [],
                 "supervisors": [],
                 "supervised": [],
+                "invitation": "A1A-A1A1-A1A"
             }
             await Database.db_client[f"{db_name}_test"]["user"].insert_one(user)
 
