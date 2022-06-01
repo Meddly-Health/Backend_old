@@ -5,7 +5,6 @@ from starlette import status
 from database import Database
 from dependencies import auth
 from schemas.user import UserModel, UserUpdateModel
-
 from utils import generate_code
 
 router = APIRouter(prefix="/supervisors", tags=["Supervisors"])

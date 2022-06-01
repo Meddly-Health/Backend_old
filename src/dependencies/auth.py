@@ -7,7 +7,6 @@ from firebase_admin import auth, credentials
 
 import config
 from database import Database
-
 from utils import generate_code
 
 cred = credentials.Certificate(config.firebase)
@@ -15,8 +14,8 @@ firebase_admin.initialize_app(cred)
 
 
 async def authenticate(
-        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-        db=Depends(Database.get_db),
+    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    db=Depends(Database.get_db),
 ):
     """
     Authenticate a user with a Bearer token.
@@ -47,16 +46,16 @@ async def authenticate(
             "diseases": [],
             "supervisors": [],
             "supervised": [],
-            "invitation": await generate_code(db)
+            "invitation": await generate_code(db),
         }
         await db["user"].insert_one(user)
     return {"user_id": decoded_token["user_id"], "email": decoded_token["email"]}
 
 
 async def authenticate_with_supervisor(
-        cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
-        db=Depends(Database.get_db),
-        supervised_id: str | None = Header(default=None),
+    cred: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    db=Depends(Database.get_db),
+    supervised_id: str | None = Header(default=None),
 ):
     """
     Authenticate a user with a Bearer token.
@@ -100,7 +99,7 @@ async def authenticate_with_supervisor(
             "diseases": [],
             "supervisors": [],
             "supervised": [],
-            "invitation": await generate_code(db)
+            "invitation": await generate_code(db),
         }
         await db["user"].insert_one(user)
     return {"user_id": user["user_id"], "email": user["email"]}
