@@ -26,6 +26,7 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
                 "pipeline": [
                     {
                         "$project": {
+                            "avatar": 1,
                             "email": 1,
                             "first_name": 1,
                             "last_name": 1,
@@ -44,6 +45,7 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
                 "pipeline": [
                     {
                         "$project": {
+                            "avatar": 1,
                             "email": 1,
                             "first_name": 1,
                             "last_name": 1,

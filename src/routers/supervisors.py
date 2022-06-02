@@ -24,8 +24,11 @@ async def delete_supervisor(
     supervisor = await db["user"].find_one({"_id": supervisor_id})
     supervised = await db["user"].find_one({"_id": user["user_id"]})
 
-    # TODO: Checkear si el supervisado esta en la lista de supervisores
-    # TODO: Caso contrario, retornar 404
+    if (supervisor is None or supervised is None) or (supervised["_id"] not in supervisor["supervised"]):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found (maybe you are not being supervised by this user)",
+        )
 
     supervised["supervisors"].remove(supervisor_id)
     supervisor["supervised"].remove(user["user_id"])
@@ -50,8 +53,11 @@ async def delete_supervised(
     supervisor = await db["user"].find_one({"_id": user["user_id"]})
     supervised = await db["user"].find_one({"_id": supervised_id})
 
-    # TODO: Checkear si el supervisado esta en la lista de supervisores
-    # TODO: Caso contrario, retornar 404
+    if (supervisor is None or supervised is None) or (supervised["_id"] not in supervisor["supervised"]):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found (maybe this user is not being supervised by you)",
+        )
 
     supervised["supervisors"].remove(user["user_id"])
     supervisor["supervised"].remove(supervised_id)
@@ -72,8 +78,17 @@ async def accept_invitation(
     supervised = await db["user"].find_one({"_id": user["user_id"]})
 
     if supervisor:
-        # TODO: Checkear que el usuario no sea ya supervisor del otro usuario.
-        # TODO: Si se acepta muchas veces la invitacion, se agrega varias veces en la tabla.
+        if supervisor["_id"] == supervised["_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="You can't invite yourself",
+            )
+
+        if supervised["_id"] in supervisor["supervised"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="You are already being supervised by this user",
+            )
 
         supervisor["invitation"] = await generate_code(db)
         supervisor["supervised"].append(supervised["_id"])
