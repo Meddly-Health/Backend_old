@@ -8,13 +8,16 @@ class SupervisorModel(BaseModel):
     email: EmailStr
     first_name: str | None
     last_name: str | None
+    avatar: str | None
 
     class Config:
         schema_extra = {
             "example": {
+                "user_id": "7TKUuX29JFhbT6t9mnVARy70tXS2",
                 "email": "example@test.com",
                 "first_name": "John",
                 "last_name": "Doe",
+                "avatar": "avatar1"
             }
         }
 
@@ -46,6 +49,7 @@ class UserModel(BaseModel):
     weight: float | None
     sex: str | None
     birth: datetime.datetime | None
+    avatar: str | None
 
     class Config:
         allow_population_by_field_name = True
@@ -82,5 +86,6 @@ class UserModel(BaseModel):
                 "weight": 67.0,
                 "sex": "M",
                 "birth": "2022-04-12T03:31:19.122000",
+                "avatar": "avatar1"
             }
         }
