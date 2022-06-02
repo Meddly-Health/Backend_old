@@ -24,7 +24,9 @@ async def delete_supervisor(
     supervisor = await db["user"].find_one({"_id": supervisor_id})
     supervised = await db["user"].find_one({"_id": user["user_id"]})
 
-    if (supervisor is None or supervised is None) or (supervised["_id"] not in supervisor["supervised"]):
+    if (supervisor is None or supervised is None) or (
+        supervised["_id"] not in supervisor["supervised"]
+    ):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found (maybe you are not being supervised by this user)",
@@ -53,7 +55,9 @@ async def delete_supervised(
     supervisor = await db["user"].find_one({"_id": user["user_id"]})
     supervised = await db["user"].find_one({"_id": supervised_id})
 
-    if (supervisor is None or supervised is None) or (supervised["_id"] not in supervisor["supervised"]):
+    if (supervisor is None or supervised is None) or (
+        supervised["_id"] not in supervisor["supervised"]
+    ):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found (maybe this user is not being supervised by you)",

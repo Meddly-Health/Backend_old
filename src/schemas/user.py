@@ -17,7 +17,7 @@ class SupervisorModel(BaseModel):
                 "email": "example@test.com",
                 "first_name": "John",
                 "last_name": "Doe",
-                "avatar": "avatar1"
+                "avatar": "avatar1",
             }
         }
 
@@ -86,6 +86,6 @@ class UserModel(BaseModel):
                 "weight": 67.0,
                 "sex": "M",
                 "birth": "2022-04-12T03:31:19.122000",
-                "avatar": "avatar1"
+                "avatar": "avatar1",
             }
         }
