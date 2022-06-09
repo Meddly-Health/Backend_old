@@ -29,6 +29,7 @@ class UserUpdateModel(BaseModel):
     weight: float | None
     sex: str | None
     birth: datetime.datetime | None
+    avatar: str | None
 
 
 class UserModel(BaseModel):
