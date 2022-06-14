@@ -64,9 +64,9 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
 
 @router.post("/", response_model=UserModel, status_code=201, summary="Update user data")
 async def update_user(
-    user_data: UserUpdateModel,
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
+        user_data: UserUpdateModel,
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo):
@@ -87,43 +87,10 @@ async def update_user(
     return user_data
 
 
-@router.patch(
-    "/", response_model=UserModel, status_code=200, summary="Update user data"
-)
-async def update_user(
-    user_data: UserUpdateModel,
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
-):
-    """
-    Actualiza los datos de un usuario (sin sobreescribirlos):
-
-    - **first_name**
-    - **last_name**
-    - **height**
-    - **weight**
-    - **sex**
-    - **birth**
-    """
-
-    new_user = await db["user"].find_one({"_id": user["user_id"]})
-
-    new_user_data = jsonable_encoder(user_data)
-
-    for data in new_user_data:
-        if new_user_data[data]:
-            new_user[data] = new_user_data[data]
-
-    new_user["updated_at"] = datetime.datetime.now()
-
-    await db["user"].update_one({"_id": user["user_id"]}, {"$set": new_user})
-    return new_user
-
-
 @router.delete("/", status_code=200, summary="Delete user")
 async def delete_user(
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
 ):
     """
     Elimina completamente a un usuario
