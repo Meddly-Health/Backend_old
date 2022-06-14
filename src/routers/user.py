@@ -64,9 +64,9 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
 
 @router.post("/", response_model=UserModel, status_code=201, summary="Update user data")
 async def update_user(
-        user_data: UserUpdateModel,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user_data: UserUpdateModel,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo):
@@ -81,7 +81,7 @@ async def update_user(
     """
 
     user_data = jsonable_encoder(user_data)
-    user_data['updated_at'] = datetime.datetime.now()
+    user_data["updated_at"] = datetime.datetime.now()
 
     await db["user"].update_one({"_id": user["user_id"]}, user_data)
     return user_data
@@ -91,9 +91,9 @@ async def update_user(
     "/", response_model=UserModel, status_code=200, summary="Update user data"
 )
 async def update_user(
-        user_data: UserUpdateModel,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user_data: UserUpdateModel,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sin sobreescribirlos):
@@ -122,8 +122,8 @@ async def update_user(
 
 @router.delete("/", status_code=200, summary="Delete user")
 async def delete_user(
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Elimina completamente a un usuario
