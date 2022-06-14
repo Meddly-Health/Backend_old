@@ -9,7 +9,6 @@ import config
 from database import Database
 from routers import supervisors, test, user
 
-
 app = FastAPI(**config.metadata)
 
 app.include_router(user.router)
