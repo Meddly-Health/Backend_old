@@ -14,7 +14,7 @@ body = {
 
 def test_create_user(client: TestClient):
     response = client.post("/user/", headers={"cred": "test"}, json=body)
-    assert response.status_code == HTTP_201_CREATED
+    assert response.status_code == HTTP_200_OK
     for value in body:
         assert body[value] == response.json()[value]
 
@@ -29,7 +29,7 @@ def test_get_user(client: TestClient):
 def test_update_user(client: TestClient):
     new_sex = "F"
     body["sex"] = new_sex
-    response = client.post("/user/", headers={"cred": "test"}, json={"sex": body})
+    response = client.post("/user/", headers={"cred": "test"}, json=body)
     assert response.status_code == HTTP_200_OK
     for value in body:
         assert body[value] == response.json()[value]

@@ -62,7 +62,7 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
     return user
 
 
-@router.post("/", response_model=UserModel, status_code=201, summary="Update user data")
+@router.post("/", response_model=UserModel, status_code=200, summary="Update user data")
 async def update_user(
     user_data: UserUpdateModel,
     user=Depends(auth.authenticate),
@@ -84,6 +84,7 @@ async def update_user(
     user_data["updated_at"] = datetime.datetime.now()
 
     await db["user"].update_one({"_id": user["user_id"]}, {"$set": user_data})
+    user_data = await db["user"].find_one({"_id": user["user_id"]})
     return user_data
 
 

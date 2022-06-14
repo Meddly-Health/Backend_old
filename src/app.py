@@ -1,8 +1,15 @@
+try:
+    import set_environ
+except ModuleNotFoundError:
+    pass
+
 from fastapi import FastAPI
 
 import config
 from database import Database
 from routers import supervisors, test, user
+
+
 
 app = FastAPI(**config.metadata)
 
