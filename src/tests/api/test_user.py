@@ -8,7 +8,7 @@ body = {
     "weight": 67,
     "sex": "M",
     "birth": "2000-02-10T00:00:00+00:00",
-    "avatar": "avatar1"
+    "avatar": "avatar1",
 }
 
 
