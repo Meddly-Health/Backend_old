@@ -83,7 +83,7 @@ async def update_user(
     user_data = jsonable_encoder(user_data)
     user_data["updated_at"] = datetime.datetime.now()
 
-    await db["user"].update_one({"_id": user["user_id"]}, user_data)
+    await db["user"].update_one({"_id": user["user_id"]}, {"$set": user_data})
     return user_data
 
 
