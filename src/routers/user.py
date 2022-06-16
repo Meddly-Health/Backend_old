@@ -16,8 +16,8 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
     """
     Obtener la información de un usuario
     """
-
-    return await User.get(db, user)
+    user = await User.get(db, user)
+    return user
 
 
 @router.post("/", response_model=UserModel, status_code=200, summary="Update user data")
@@ -37,8 +37,8 @@ async def update_user(
     - **birth**
     - **avatar**
     """
-
-    return await User.update(db, user, user_data)
+    user = await User.update(db, user, user_data)
+    return user
 
 
 @router.delete("/", status_code=200, summary="Delete user")
@@ -49,5 +49,5 @@ async def delete_user(
     """
     Elimina completamente a un usuario
     """
-
-    return await User.delete(db, user)
+    response = await User.delete(db, user)
+    return response

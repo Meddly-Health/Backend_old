@@ -48,10 +48,7 @@ class User:
                 }
             },
         ]
-        print("PENE")
         user = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
-        print("PENE2")
-        print(user)
         return user
 
     @classmethod
@@ -60,7 +57,8 @@ class User:
         user_data["updated_at"] = datetime.datetime.now()
 
         await db["user"].update_one({"_id": user["user_id"]}, {"$set": user_data})
-        return cls.get(db, user)
+        user = await cls.get(db, user)
+        return user
 
     @staticmethod
     async def delete(db, user):
