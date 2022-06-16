@@ -5,6 +5,7 @@ from fastapi.encoders import jsonable_encoder
 
 from database import Database
 from dependencies import auth
+from models.user import User
 from schemas.user import UserModel, UserUpdateModel
 
 router = APIRouter(prefix="/user", tags=["User"])
@@ -15,57 +16,15 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
     """
     Obtener la información de un usuario
     """
-    pipeline = [
-        {"$match": {"_id": user["user_id"]}},
-        {
-            "$lookup": {
-                "from": "user",
-                "localField": "supervised",
-                "foreignField": "_id",
-                "as": "supervised",
-                "pipeline": [
-                    {
-                        "$project": {
-                            "avatar": 1,
-                            "email": 1,
-                            "first_name": 1,
-                            "last_name": 1,
-                            "_id": 1,
-                        }
-                    },
-                ],
-            }
-        },
-        {
-            "$lookup": {
-                "from": "user",
-                "localField": "supervisors",
-                "foreignField": "_id",
-                "as": "supervisors",
-                "pipeline": [
-                    {
-                        "$project": {
-                            "avatar": 1,
-                            "email": 1,
-                            "first_name": 1,
-                            "last_name": 1,
-                            "_id": 1,
-                        }
-                    },
-                ],
-            }
-        },
-    ]
-    user = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
 
-    return user
+    return await User.get(db, user)
 
 
 @router.post("/", response_model=UserModel, status_code=200, summary="Update user data")
 async def update_user(
-    user_data: UserUpdateModel,
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
+        user_data: UserUpdateModel,
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo):
@@ -79,23 +38,16 @@ async def update_user(
     - **avatar**
     """
 
-    user_data = jsonable_encoder(user_data)
-    user_data["updated_at"] = datetime.datetime.now()
-
-    await db["user"].update_one({"_id": user["user_id"]}, {"$set": user_data})
-    user_data = await db["user"].find_one({"_id": user["user_id"]})
-    return user_data
+    return await User.update(db, user, user_data)
 
 
 @router.delete("/", status_code=200, summary="Delete user")
 async def delete_user(
-    user=Depends(auth.authenticate),
-    db=Depends(Database.get_db),
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
 ):
     """
     Elimina completamente a un usuario
     """
-    # TODO: Eliminar todos los datos del usuario (y sus relaciones)
 
-    await db["user"].delete_one({"_id": user["user_id"]})
-    return {"status": "ok"}
+    return await User.delete(db, user)
