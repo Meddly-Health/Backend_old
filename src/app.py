@@ -7,7 +7,6 @@ except ModuleNotFoundError:
 
 from fastapi import FastAPI, Request
 
-
 import config
 from database import Database
 from routers import supervisors, test, user

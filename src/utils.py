@@ -5,10 +5,10 @@ import string
 
 import starlette.responses
 from fastapi import Request
+from fastapi.responses import JSONResponse
 from starlette.concurrency import iterate_in_threadpool
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import Message
-from fastapi.responses import JSONResponse
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):
