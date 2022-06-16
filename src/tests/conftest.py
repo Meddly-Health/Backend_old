@@ -8,26 +8,15 @@ from fastapi.testclient import TestClient
 from app import app
 from database import Database
 from dependencies import auth
-from utils import generate_code
+from models.user import User
 
 Database.testing = True
 
 
 async def override_auth(cred: str = Header(default=None), db=Depends(Database.get_db)):
-    user = await db["user"].find_one({"_id": cred})
-    if not user:
-        user = {
-            "_id": cred,
-            "email": f"{cred}@test.com",
-            "created_at": datetime.datetime.now(),
-            "updated_at": datetime.datetime.now(),
-            "diseases": [],
-            "supervisors": [],
-            "supervised": [],
-            "invitation": await generate_code(db),
-        }
-        await db["user"].insert_one(user)
-    return {"user_id": cred, "email": f"{cred}@test.com"}
+    credentials = {'user_id': cred, 'email': f"{cred}@test.com"}
+    await User(db, credentials).assert_user()
+    return credentials
 
 
 app.dependency_overrides[auth.authenticate] = override_auth

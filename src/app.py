@@ -1,11 +1,9 @@
-from starlette.middleware.base import BaseHTTPMiddleware
-
 try:
     import set_environ
 except ModuleNotFoundError:
     pass
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 
 import config
 from database import Database

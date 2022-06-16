@@ -1,7 +1,4 @@
-import datetime
-
 from fastapi import APIRouter, Depends
-from fastapi.encoders import jsonable_encoder
 
 from database import Database
 from dependencies import auth
@@ -16,7 +13,7 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
     """
     Obtener la información de un usuario
     """
-    user = await User.get(db, user)
+    user = await User(db, user).get()
     return user
 
 
@@ -37,7 +34,7 @@ async def update_user(
     - **birth**
     - **avatar**
     """
-    user = await User.update(db, user, user_data)
+    user = await User(db, user).update(user_data)
     return user
 
 
@@ -49,5 +46,5 @@ async def delete_user(
     """
     Elimina completamente a un usuario
     """
-    response = await User.delete(db, user)
+    response = await User(db, user).delete()
     return response

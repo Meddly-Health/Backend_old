@@ -1,8 +1,4 @@
-import datetime
-
-from motor import motor_asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import GEO2D
 
 from config import db_name, db_string
 
@@ -25,7 +21,14 @@ class Database:
         if Database.testing:
             await Database.db_client.drop_database(f"{db_name}_test")
 
+        await Database.generate_indexes()
+
     @staticmethod
     async def close_db():
         """Close database connection."""
         Database.db_client.close()
+
+    @staticmethod
+    async def generate_indexes():
+        # TODO: Hay que definir los indices
+        pass
