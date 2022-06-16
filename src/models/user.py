@@ -4,7 +4,6 @@ from fastapi.encoders import jsonable_encoder
 
 
 class User:
-
     @staticmethod
     async def get(db, user):
         pipeline = [

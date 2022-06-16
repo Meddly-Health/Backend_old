@@ -22,9 +22,9 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
 
 @router.post("/", response_model=UserModel, status_code=200, summary="Update user data")
 async def update_user(
-        user_data: UserUpdateModel,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user_data: UserUpdateModel,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Actualiza los datos de un usuario (sobreecribiendo el objeto completo):
@@ -43,8 +43,8 @@ async def update_user(
 
 @router.delete("/", status_code=200, summary="Delete user")
 async def delete_user(
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Elimina completamente a un usuario
