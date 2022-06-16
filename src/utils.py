@@ -39,10 +39,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                 "path": request.url.path,
                 "query_string": request.url.query,
                 "body": json_body,
-                "IP": request.client.host
+                "IP": request.client.host,
             },
-            "response": {
-            }
+            "response": {},
         }
 
         exception = None
@@ -50,16 +49,16 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             response_body = [chunk async for chunk in response.body_iterator]
             response.body_iterator = iterate_in_threadpool(iter(response_body))
-            log["response"]['status'] = response.status_code
+            log["response"]["status"] = response.status_code
             try:
-                log["response"]['body'] = json.loads(response_body[0].decode())
+                log["response"]["body"] = json.loads(response_body[0].decode())
             except json.decoder.JSONDecodeError:
-                log["response"]['body'] = response_body[0].decode()
+                log["response"]["body"] = response_body[0].decode()
             return response
         except Exception as e:
             exception = e
-            log["response"]['status'] = 500
-            log["response"]['error'] = str(e)
+            log["response"]["status"] = 500
+            log["response"]["error"] = str(e)
             return JSONResponse(status_code=500, content={"error": str(e)})
         finally:
             if request.url.path not in ["/docs", "/openapi.json", "/test/logs"]:

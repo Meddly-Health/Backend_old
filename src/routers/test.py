@@ -40,4 +40,3 @@ def register(user: UserRequestModel):
 @router.get("/logs")
 def logs():
     return LoggingMiddleware.logs
-
