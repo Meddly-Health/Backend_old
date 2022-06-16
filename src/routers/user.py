@@ -57,7 +57,6 @@ async def get_user(user=Depends(auth.authenticate), db=Depends(Database.get_db))
         },
     ]
     user = (await db["user"].aggregate(pipeline).to_list(length=1))[0]
-    print(user)
 
     return user
 
