@@ -14,7 +14,7 @@ Database.testing = True
 
 
 async def override_auth(cred: str = Header(default=None), db=Depends(Database.get_db)):
-    credentials = {'user_id': cred, 'email': f"{cred}@test.com"}
+    credentials = {"user_id": cred, "email": f"{cred}@test.com"}
     await User(db, credentials).assert_user()
     return credentials
 

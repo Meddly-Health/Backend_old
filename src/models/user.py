@@ -14,8 +14,8 @@ class User:
 
     async def assert_user(self):
         """
-            Esta función se asegura de que el usuario exista en la base de datos, y, en caso de no hacerlo,
-            lo crea estableciendo los parametros iniciales
+        Esta función se asegura de que el usuario exista en la base de datos, y, en caso de no hacerlo,
+        lo crea estableciendo los parametros iniciales
         """
         user = await self.db["user"].find_one({"_id": self.user["user_id"]})
         if not user:
@@ -80,7 +80,9 @@ class User:
         user_data = jsonable_encoder(user_data)
         user_data["updated_at"] = datetime.datetime.now()
 
-        await self.db["user"].update_one({"_id": self.user["user_id"]}, {"$set": user_data})
+        await self.db["user"].update_one(
+            {"_id": self.user["user_id"]}, {"$set": user_data}
+        )
         user = await self.get()
         return user
 
@@ -95,7 +97,7 @@ class User:
         supervised = await self.db["user"].find_one({"_id": supervised_id})
 
         if (supervisor is None or supervised is None) or (
-                supervised["_id"] not in supervisor["supervised"]
+            supervised["_id"] not in supervisor["supervised"]
         ):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -105,7 +107,9 @@ class User:
         supervised["supervisors"].remove(self.user["user_id"])
         supervisor["supervised"].remove(supervised_id)
 
-        await self.db["user"].update_one({"_id": self.user["user_id"]}, {"$set": supervisor})
+        await self.db["user"].update_one(
+            {"_id": self.user["user_id"]}, {"$set": supervisor}
+        )
         await self.db["user"].update_one({"_id": supervised_id}, {"$set": supervised})
 
         return {"status": "ok"}
@@ -115,7 +119,7 @@ class User:
         supervised = await self.db["user"].find_one({"_id": self.user["user_id"]})
 
         if (supervisor is None or supervised is None) or (
-                supervised["_id"] not in supervisor["supervised"]
+            supervised["_id"] not in supervisor["supervised"]
         ):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -126,7 +130,9 @@ class User:
         supervisor["supervised"].remove(self.user["user_id"])
 
         await self.db["user"].update_one({"_id": supervisor_id}, {"$set": supervisor})
-        await self.db["user"].update_one({"_id": self.user["user_id"]}, {"$set": supervised})
+        await self.db["user"].update_one(
+            {"_id": self.user["user_id"]}, {"$set": supervised}
+        )
 
         return {"status": "ok"}
 
@@ -151,12 +157,18 @@ class User:
             supervisor["supervised"].append(supervised["_id"])
             supervised["supervisors"].append(supervisor["_id"])
 
-            await self.db["user"].update_one({"_id": supervised["_id"]}, {"$set": supervised})
-            await self.db["user"].update_one({"_id": supervisor["_id"]}, {"$set": supervisor})
+            await self.db["user"].update_one(
+                {"_id": supervised["_id"]}, {"$set": supervised}
+            )
+            await self.db["user"].update_one(
+                {"_id": supervisor["_id"]}, {"$set": supervisor}
+            )
 
             return {"status": "ok"}
 
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
 
     async def generate_code(self):
         """
@@ -166,12 +178,16 @@ class User:
         async def generate():
             generated_code = []
             for k in [3, 4, 3]:
-                generated_code.append("".join(random.choices(string.ascii_uppercase, k=k)))
+                generated_code.append(
+                    "".join(random.choices(string.ascii_uppercase, k=k))
+                )
             generated_code = "-".join(generated_code).upper()
             return generated_code
 
         async def is_repeated(code_to_check):
-            code_is_repeated = await self.db["user"].find_one({"invitation": code_to_check})
+            code_is_repeated = await self.db["user"].find_one(
+                {"invitation": code_to_check}
+            )
             return code_is_repeated is not None
 
         code = await generate()

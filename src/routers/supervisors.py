@@ -11,9 +11,9 @@ router = APIRouter(prefix="/supervisors", tags=["Supervisors"])
     "/supervisor/{supervisor_id}", status_code=200, summary="Delete supervisor"
 )
 async def delete_supervisor(
-        supervisor_id: str,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    supervisor_id: str,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Elimina un supervisor
@@ -26,9 +26,9 @@ async def delete_supervisor(
     "/supervised/{supervised_id}", status_code=200, summary="Delete supervised"
 )
 async def delete_supervised(
-        supervised_id: str,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    supervised_id: str,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Elimina un supervisado
@@ -39,9 +39,9 @@ async def delete_supervised(
 
 @router.post("/invitation", status_code=200, summary="Accept invitation")
 async def accept_invitation(
-        code,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    code,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     Acepta un código de invitación
