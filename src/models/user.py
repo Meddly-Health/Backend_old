@@ -5,6 +5,7 @@ import string
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from starlette import status
+from medicine import *
 
 
 class User:
@@ -87,8 +88,6 @@ class User:
         return user
 
     async def delete(self):
-        # TODO: Eliminar todos los datos del usuario (y sus relaciones)
-
         await self.db["user"].delete_one({"_id": self.user["user_id"]})
         return {"status": "ok"}
 
@@ -195,3 +194,9 @@ class User:
             code = await generate()
 
         return code
+
+    async def add_treatment(self, treatment: Treatment):
+        pass
+
+    async def mark_consumption(self, treatment_id: str, consumption: Consumption):
+        pass
