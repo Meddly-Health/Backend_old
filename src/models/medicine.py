@@ -10,6 +10,7 @@ class Medicine:
 
 
 class Treatment:
-
-    def create(self, ):
+    def create(
+        self,
+    ):
         pass
