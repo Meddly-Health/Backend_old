@@ -4,8 +4,8 @@ import string
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from starlette import status
 from medicine import *
+from starlette import status
 
 
 class User:
