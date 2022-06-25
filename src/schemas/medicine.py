@@ -93,7 +93,13 @@ class TreatmentModel(BaseModel):
                         "name": "specific_days",
                         "start": "2022-01-01T00:00:00",
                         "end": "2023-01-01T00:00:00",
-                        "days": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+                        "days": [
+                            "monday",
+                            "tuesday",
+                            "wednesday",
+                            "thursday",
+                            "friday",
+                        ],
                     },
                 },
                 "stock": 10,

@@ -39,7 +39,6 @@ class Database:
 if __name__ == "__main__":
     import asyncio
 
-
     async def main():
         await Database.connect_db()
         db = await Database.get_db()
@@ -47,6 +46,5 @@ if __name__ == "__main__":
         # ZONA DE PRUEBAS
 
         # ZONA DE PRUEBAS
-
 
     asyncio.run(main())

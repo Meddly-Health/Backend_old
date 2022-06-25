@@ -10,6 +10,7 @@ from uuid import uuid4
 from schemas.medicine import TreatmentModel, NewConsumption
 from models.medicine import Treatment
 
+
 class User:
     def __init__(self, db, user):
         self.db = db
@@ -38,7 +39,7 @@ class User:
     async def get(self):
         pipeline = [
             {"$match": {"_id": self.user["user_id"]}},
-            {'$project': {'treatments': 0}},
+            {"$project": {"treatments": 0}},
             {
                 "$lookup": {
                     "from": "user",
@@ -101,7 +102,7 @@ class User:
         supervised = await self.db["user"].find_one({"_id": supervised_id})
 
         if (supervisor is None or supervised is None) or (
-                supervised["_id"] not in supervisor["supervised"]
+            supervised["_id"] not in supervisor["supervised"]
         ):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -124,7 +125,7 @@ class User:
         supervised = await self.db["user"].find_one({"_id": self.user["user_id"]})
 
         if (supervisor is None or supervised is None) or (
-                supervised["_id"] not in supervisor["supervised"]
+            supervised["_id"] not in supervisor["supervised"]
         ):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -207,8 +208,11 @@ class User:
 
     async def add_treatment(self, treatment: TreatmentModel):
         treatment = jsonable_encoder(treatment)
-        treatment['history'] = {}
-        await self.db["user"].update_one({"_id": self.user["user_id"]}, {"$set": {f"treatments.{uuid4()}": treatment}})
+        treatment["history"] = {}
+        await self.db["user"].update_one(
+            {"_id": self.user["user_id"]},
+            {"$set": {f"treatments.{uuid4()}": treatment}},
+        )
         return {"status": "ok"}
 
     async def add_consumption(self, treatment_id: str, consumption: NewConsumption):

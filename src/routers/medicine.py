@@ -10,9 +10,9 @@ router = APIRouter(prefix="/treatment", tags=["Treatment"])
 
 @router.post("/", status_code=201, summary="Add treatment")
 async def add_treatment(
-        treatment: TreatmentModel,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    treatment: TreatmentModel,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     TODO: Poner alguna descripcion xd
@@ -23,10 +23,10 @@ async def add_treatment(
 
 @router.post("/{treatment_id}/consumption", status_code=201, summary="Add consumption")
 async def add_consumption(
-        treatment_id: str,
-        consumption: NewConsumption,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    treatment_id: str,
+    consumption: NewConsumption,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
     TODO: Poner alguna descripcion xd

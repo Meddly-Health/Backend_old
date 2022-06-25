@@ -20,14 +20,27 @@ class ConsumptionRule:
         if consumption_rule["name"] == "need_it":
             return NeedIt(consumption_rule["start"], consumption_rule["end"])
         elif consumption_rule["name"] == "every_day":
-            return EveryDay(consumption_rule["start"], consumption_rule["end"], consumption_rule["hours"])
+            return EveryDay(
+                consumption_rule["start"],
+                consumption_rule["end"],
+                consumption_rule["hours"],
+            )
         elif consumption_rule["name"] == "every_x_day":
-            return EveryXDays(consumption_rule["start"], consumption_rule["end"], consumption_rule["number"])
+            return EveryXDays(
+                consumption_rule["start"],
+                consumption_rule["end"],
+                consumption_rule["number"],
+            )
         elif consumption_rule["name"] == "specific_days":
-            return SpecificDays(consumption_rule["start"], consumption_rule["end"], consumption_rule["days"])
+            return SpecificDays(
+                consumption_rule["start"],
+                consumption_rule["end"],
+                consumption_rule["days"],
+            )
         else:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Unknown consumption rule"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Unknown consumption rule",
             )
 
 
@@ -40,7 +53,12 @@ class NeedIt(ConsumptionRule):
 
 
 class EveryDay(ConsumptionRule):
-    def __init__(self, start: datetime.datetime, hours: list[datetime.time], end: datetime.datetime = None):
+    def __init__(
+        self,
+        start: datetime.datetime,
+        hours: list[datetime.time],
+        end: datetime.datetime = None,
+    ):
         super().__init__(start, end)
         self.hours = hours
 
@@ -50,7 +68,9 @@ class EveryDay(ConsumptionRule):
 
 
 class EveryXDays(ConsumptionRule):
-    def __init__(self, start: datetime.datetime, number: int, end: datetime.datetime = None):
+    def __init__(
+        self, start: datetime.datetime, number: int, end: datetime.datetime = None
+    ):
         super().__init__(start, end)
         self.number = number
 
@@ -60,14 +80,22 @@ class EveryXDays(ConsumptionRule):
 
 
 class SpecificDays(ConsumptionRule):
-    def __init__(self,
-                 start: datetime.datetime,
-                 days: list[
-                     Literal[
-                         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
-                     ]
-                 ],
-                 end: datetime.datetime = None):
+    def __init__(
+        self,
+        start: datetime.datetime,
+        days: list[
+            Literal[
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday",
+            ]
+        ],
+        end: datetime.datetime = None,
+    ):
         super().__init__(start, end)
         self.days = days
 
@@ -92,29 +120,37 @@ class Treatment:
         self.consumption_rule: ConsumptionRule = await self.get_consumption_rule()
 
     async def validate(self):
-        response = await self.db['user'].find_one(
-            {"_id": self.user['user_id'],
-             f"treatments.{self.treatment_id}": {"$exists": True}},
-            {f"treatments.{self.treatment_id}": 1})
+        response = await self.db["user"].find_one(
+            {
+                "_id": self.user["user_id"],
+                f"treatments.{self.treatment_id}": {"$exists": True},
+            },
+            {f"treatments.{self.treatment_id}": 1},
+        )
 
         if response is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Treatment not found"
             )
-        return response['treatments'][self.treatment_id]
+        return response["treatments"][self.treatment_id]
 
     async def get_consumption_rule(self):
-        return ConsumptionRule.get_consumption_rule(self.treatment['treatment_indication']['consumption_rule'])
+        return ConsumptionRule.get_consumption_rule(
+            self.treatment["treatment_indication"]["consumption_rule"]
+        )
 
     async def add_consumption(self, consumption: NewConsumption):
         if self.consumption_rule.validate(consumption):
-            await self.db['user'].update_one(
-                {'_id': self.user['user_id']},
-                {'$set':
-                    {f"treatments.{self.treatment_id}.history.{str(consumption.consumption_date.date())}.{f'{consumption.consumption_date.hour}:{consumption.consumption_date.minute}'}": True}
-                }
+            await self.db["user"].update_one(
+                {"_id": self.user["user_id"]},
+                {
+                    "$set": {
+                        f"treatments.{self.treatment_id}.history.{str(consumption.consumption_date.date())}.{f'{consumption.consumption_date.hour}:{consumption.consumption_date.minute}'}": True
+                    }
+                },
             )
         else:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Consumption time is not valid"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Consumption time is not valid",
             )
