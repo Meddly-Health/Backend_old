@@ -7,7 +7,7 @@ from fastapi import FastAPI
 
 import config
 from database import Database
-from routers import supervisors, test, user, medicine
+from routers import medicine, supervisors, test, user
 from utils import LoggingMiddleware
 
 app = FastAPI(**config.metadata)

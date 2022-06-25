@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from database import Database
 from dependencies import auth
 from models.user import User
-from schemas.medicine import TreatmentModel, NewConsumption
+from schemas.medicine import NewConsumption, TreatmentModel
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
 

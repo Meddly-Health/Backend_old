@@ -1,6 +1,7 @@
 import datetime
 
 from pydantic import BaseModel, EmailStr, Field
+
 from schemas.medicine import TreatmentModel
 
 

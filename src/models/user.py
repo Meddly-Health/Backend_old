@@ -1,14 +1,14 @@
 import datetime
 import random
 import string
+from uuid import uuid4
 
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from starlette import status
-from uuid import uuid4
 
-from schemas.medicine import TreatmentModel, NewConsumption
 from models.medicine import Treatment
+from schemas.medicine import NewConsumption, TreatmentModel
 
 
 class User:

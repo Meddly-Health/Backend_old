@@ -1,7 +1,7 @@
-from fastapi import HTTPException
 import datetime
 from typing import Literal
 
+from fastapi import HTTPException
 from starlette import status
 
 from schemas.medicine import NewConsumption
