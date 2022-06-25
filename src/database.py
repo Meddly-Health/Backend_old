@@ -1,3 +1,5 @@
+import datetime
+
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from config import db_name, db_string
@@ -32,3 +34,19 @@ class Database:
     async def generate_indexes():
         # TODO: Hay que definir los indices
         pass
+
+
+if __name__ == "__main__":
+    import asyncio
+
+
+    async def main():
+        await Database.connect_db()
+        db = await Database.get_db()
+
+        # ZONA DE PRUEBAS
+
+        # ZONA DE PRUEBAS
+
+
+    asyncio.run(main())
