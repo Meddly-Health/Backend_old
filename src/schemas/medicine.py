@@ -25,14 +25,15 @@ class EveryDay(ConsumptionRule):
 
 class EveryXDay(ConsumptionRule):
     """
-        Esta regla de consumos se aplica cada x días, por ejemplo:
-            Si el medicamento se debe aplicar cada 2 días (number = 2), a partir del Lunes 1 de Junio a las 17.30,
-            las próximas fechas válidas para aplicar el medicamento son:
-                - Miércoles 3 de Junio a las 17.30
-                - Viernes 5 de Junio a las 17.30
-                - Domingo 7 de Junio a las 17.30
-                - etc...
+    Esta regla de consumos se aplica cada x días, por ejemplo:
+        Si el medicamento se debe aplicar cada 2 días (number = 2), a partir del Lunes 1 de Junio a las 17.30,
+        las próximas fechas válidas para aplicar el medicamento son:
+            - Miércoles 3 de Junio a las 17.30
+            - Viernes 5 de Junio a las 17.30
+            - Domingo 7 de Junio a las 17.30
+            - etc...
     """
+
     name: Literal["every_x_day"]
     number: int
 

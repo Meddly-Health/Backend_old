@@ -33,18 +33,24 @@ class ConsumptionRule:
 
     @staticmethod
     def get_consumption_rule(consumption_rule):
-        if consumption_rule['name'] == "need_it":
+        if consumption_rule["name"] == "need_it":
             consumption_rule = NeedItSchema(**consumption_rule)
             return NeedIt(consumption_rule.start, consumption_rule.end)
-        elif consumption_rule['name'] == "every_day":
+        elif consumption_rule["name"] == "every_day":
             consumption_rule = EveryDaySchema(**consumption_rule)
-            return EveryDay(consumption_rule.start, consumption_rule.hours, consumption_rule.end)
-        elif consumption_rule['name'] == "every_x_day":
+            return EveryDay(
+                consumption_rule.start, consumption_rule.hours, consumption_rule.end
+            )
+        elif consumption_rule["name"] == "every_x_day":
             consumption_rule = EveryXDaySchema(**consumption_rule)
-            return EveryXDays(consumption_rule.start, consumption_rule.number, consumption_rule.end)
-        elif consumption_rule['name'] == "specific_days":
+            return EveryXDays(
+                consumption_rule.start, consumption_rule.number, consumption_rule.end
+            )
+        elif consumption_rule["name"] == "specific_days":
             consumption_rule = SpecificDaysSchema(**consumption_rule)
-            return SpecificDays(consumption_rule.start, consumption_rule.days, consumption_rule.end)
+            return SpecificDays(
+                consumption_rule.start, consumption_rule.days, consumption_rule.end
+            )
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -86,7 +92,9 @@ class EveryXDays(ConsumptionRule):
 
     def validate(self, consumption: NewConsumption):
         super().validate(consumption)
-        correct_day = (relativedelta(self.start, consumption.consumption_date).days % self.number) == 0
+        correct_day = (
+            relativedelta(self.start, consumption.consumption_date).days % self.number
+        ) == 0
         if not correct_day:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -177,5 +185,6 @@ class Treatment:
             )
         else:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Consumption time or date is not valid"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Consumption time or date is not valid",
             )

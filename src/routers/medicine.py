@@ -15,7 +15,7 @@ async def add_treatment(
     db=Depends(Database.get_db),
 ):
     """
-        Agrega un tratamiento
+    Agrega un tratamiento
     """
     treatment = await User(db, user).add_treatment(treatment)
     return treatment
@@ -23,11 +23,11 @@ async def add_treatment(
 
 @router.get("/", status_code=200, summary="Get all treatments")
 async def get_treatments(
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
-        Obtiene todos los tratamientos
+    Obtiene todos los tratamientos
     """
     # TODO: @leilaspini esta funcion deberia quedar unicamente con las dos lineas de aca abajo descomentadas
     #       hay que implementar get_treatments en el modelo de User.
@@ -42,7 +42,9 @@ async def get_treatments(
     pass
 
 
-@router.post("/{treatment_id}/consumption", status_code=201, summary="Add a consumption")
+@router.post(
+    "/{treatment_id}/consumption", status_code=201, summary="Add a consumption"
+)
 async def add_consumption(
     treatment_id: str,
     consumption: NewConsumption,
@@ -50,21 +52,23 @@ async def add_consumption(
     db=Depends(Database.get_db),
 ):
     """
-        Marca como consumida una medicina
+    Marca como consumida una medicina
     """
     consumption = await User(db, user).add_consumption(treatment_id, consumption)
     return consumption
 
 
-@router.delete("/{treatment_id}/consumption", status_code=200, summary="Delete a consumption")
+@router.delete(
+    "/{treatment_id}/consumption", status_code=200, summary="Delete a consumption"
+)
 async def delete_consumption(
-        treatment_id: str,
-        consumption: NewConsumption,
-        user=Depends(auth.authenticate),
-        db=Depends(Database.get_db),
+    treatment_id: str,
+    consumption: NewConsumption,
+    user=Depends(auth.authenticate),
+    db=Depends(Database.get_db),
 ):
     """
-        Elimina la consumición de una medicina
+    Elimina la consumición de una medicina
     """
     # TODO: cambiar el add_consumption para que se pueda eliminar una medicina que se ha consumido,
     #       que tenga un booleano por defecto
