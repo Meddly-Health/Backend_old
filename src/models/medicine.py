@@ -1,3 +1,5 @@
+from dateutil.relativedelta import relativedelta
+from fastapi import HTTPException
 import datetime
 from typing import Literal
 
@@ -5,38 +7,44 @@ from fastapi import HTTPException
 from starlette import status
 
 from schemas.medicine import NewConsumption
+from schemas.medicine import NeedIt as NeedItSchema
+from schemas.medicine import EveryDay as EveryDaySchema
+from schemas.medicine import EveryXDay as EveryXDaySchema
+from schemas.medicine import SpecificDays as SpecificDaysSchema
 
 
 class ConsumptionRule:
     def __init__(self, start: datetime.datetime, end: datetime.datetime = None):
-        self.start = start
-        self.end = end
+        self.start = start.replace(tzinfo=None)
+        self.end = end.replace(tzinfo=None) if end is not None else None
 
     def validate(self, consumption: NewConsumption):
-        pass
+        if consumption.consumption_date < self.start:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Consumption date is before the start of the treatment",
+            )
+        if self.end is not None:
+            if consumption.consumption_date > self.end:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="The treatment has expired",
+                )
 
     @staticmethod
     def get_consumption_rule(consumption_rule):
-        if consumption_rule["name"] == "need_it":
-            return NeedIt(consumption_rule["start"], consumption_rule["end"])
-        elif consumption_rule["name"] == "every_day":
-            return EveryDay(
-                consumption_rule["start"],
-                consumption_rule["end"],
-                consumption_rule["hours"],
-            )
-        elif consumption_rule["name"] == "every_x_day":
-            return EveryXDays(
-                consumption_rule["start"],
-                consumption_rule["end"],
-                consumption_rule["number"],
-            )
-        elif consumption_rule["name"] == "specific_days":
-            return SpecificDays(
-                consumption_rule["start"],
-                consumption_rule["end"],
-                consumption_rule["days"],
-            )
+        if consumption_rule['name'] == "need_it":
+            consumption_rule = NeedItSchema(**consumption_rule)
+            return NeedIt(consumption_rule.start, consumption_rule.end)
+        elif consumption_rule['name'] == "every_day":
+            consumption_rule = EveryDaySchema(**consumption_rule)
+            return EveryDay(consumption_rule.start, consumption_rule.hours, consumption_rule.end)
+        elif consumption_rule['name'] == "every_x_day":
+            consumption_rule = EveryXDaySchema(**consumption_rule)
+            return EveryXDays(consumption_rule.start, consumption_rule.number, consumption_rule.end)
+        elif consumption_rule['name'] == "specific_days":
+            consumption_rule = SpecificDaysSchema(**consumption_rule)
+            return SpecificDays(consumption_rule.start, consumption_rule.days, consumption_rule.end)
         else:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -49,6 +57,7 @@ class NeedIt(ConsumptionRule):
         super().__init__(start, end)
 
     def validate(self, consumption: NewConsumption):
+        super().validate(consumption)
         return True
 
 
@@ -63,6 +72,7 @@ class EveryDay(ConsumptionRule):
         self.hours = hours
 
     def validate(self, consumption: NewConsumption):
+        super().validate(consumption)
         # TODO: Implementar @leilaspini
         return True
 
@@ -75,7 +85,21 @@ class EveryXDays(ConsumptionRule):
         self.number = number
 
     def validate(self, consumption: NewConsumption):
-        # TODO: Implementar @leilaspini
+        super().validate(consumption)
+        correct_day = (relativedelta(self.start, consumption.consumption_date).days % self.number) == 0
+        if not correct_day:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Consumption date is not on the correct day",
+            )
+        correct_hour = consumption.consumption_date.hour == self.start.hour
+        correct_minute = consumption.consumption_date.minute == self.start.minute
+        correct_time = correct_hour and correct_minute
+        if not correct_time:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Consumption date is not on the correct time",
+            )
         return True
 
 
@@ -100,6 +124,7 @@ class SpecificDays(ConsumptionRule):
         self.days = days
 
     def validate(self, consumption: NewConsumption):
+        super().validate(consumption)
         # TODO: Implementar @leilaspini
         return True
 
@@ -140,6 +165,7 @@ class Treatment:
         )
 
     async def add_consumption(self, consumption: NewConsumption):
+        consumption.consumption_date = consumption.consumption_date.replace(tzinfo=None)
         if self.consumption_rule.validate(consumption):
             await self.db["user"].update_one(
                 {"_id": self.user["user_id"]},
@@ -151,6 +177,5 @@ class Treatment:
             )
         else:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Consumption time is not valid",
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Consumption time or date is not valid"
             )
