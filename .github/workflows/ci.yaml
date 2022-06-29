@@ -38,6 +38,11 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -48,4 +53,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: ignaciopieve/meddly-back:$GITHUB_REF
+          tags: ignaciopieve/meddly-back:${{ steps.extract_branch.outputs.branch }}
