@@ -89,7 +89,7 @@ jobs:
 
       - name: Run container
         run: >
-          ssh staging "docker run -d --name meddly-container -p 172.31.28.81:80:8000
+          ssh staging "docker run -d --name meddly-container -p ${{ secrets.MAIN_PRIVATE_IP }}:80:8000
           --env MEDDLY_DB_STRING='${{ secrets.MEDDLY_DB_STRING }}'
           --env MEDDLY_FIREBASE_JSON='${{ secrets.MEDDLY_FIREBASE_JSON }}'
           --env MEDDLY_FIREBASE_KEY='${{ secrets.MEDDLY_FIREBASE_KEY }}'
