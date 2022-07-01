@@ -87,6 +87,10 @@ jobs:
       - name: Build image
         run: ssh staging 'cd /home/ubuntu/Meddly-dev && docker build -t meddly-dev .'
 
+      - name: Add private IP
+        run: >
+          ssh staging "sudo ip addr add ${{ secrets.DEV_PRIVATE_IP }}/20 dev eth0"
+
       - name: Run container
         run: >
           ssh staging "docker run -d --name meddly-dev-container -p ${{ secrets.DEV_PRIVATE_IP }}:80:8000
