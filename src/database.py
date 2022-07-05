@@ -2,33 +2,43 @@ import datetime
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from config import db_name, db_string
+from config import db_name, db_string, env_name
 
 
 class Database:
     db_client: AsyncIOMotorClient = None
     testing = False
 
-    @staticmethod
-    async def get_db():
-        if Database.testing:
-            return Database.db_client[f"{db_name}_test"]
-        return Database.db_client[db_name]
+    @classmethod
+    async def get_db(cls):
+        return cls.db_client[cls.get_db_name()]
 
-    @staticmethod
-    async def connect_db():
+    @classmethod
+    async def connect_db(cls):
         """Create database connection."""
-        Database.db_client = AsyncIOMotorClient(db_string)
+        cls.db_client = AsyncIOMotorClient(db_string)
 
-        if Database.testing:
-            await Database.db_client.drop_database(f"{db_name}_test")
+        if cls.testing:
+            await cls.db_client.drop_database(cls.get_db_name())
 
-        await Database.generate_indexes()
+        await cls.generate_indexes()
 
-    @staticmethod
-    async def close_db():
+    @classmethod
+    async def get_db_name(cls):
+        if cls.testing and env_name == "dev":
+            database_name = f"{db_name}_dev_test"
+        elif cls.testing:
+            database_name = f"{db_name}_test"
+        elif env_name != "production":
+            database_name = f"{db_name}_{env_name}"
+        else:
+            database_name = db_name
+        return database_name
+
+    @classmethod
+    async def close_db(cls):
         """Close database connection."""
-        Database.db_client.close()
+        cls.db_client.close()
 
     @staticmethod
     async def generate_indexes():
