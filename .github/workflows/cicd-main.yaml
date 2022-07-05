@@ -89,7 +89,7 @@ jobs:
 
       - name: Add private IP
         run: >
-          ssh staging "sudo ip addr add ${{ secrets.MAIN_PRIVATE_IP }}/20 dev eth0"
+          ssh staging "sudo ip addr add ${{ secrets.MAIN_PRIVATE_IP }}/20 dev eth0" || echo "Already added"
 
       - name: Run container
         run: >
