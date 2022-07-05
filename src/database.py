@@ -11,7 +11,8 @@ class Database:
 
     @classmethod
     async def get_db(cls):
-        return cls.db_client[cls.get_db_name()]
+        database_name = await cls.get_db_name()
+        return cls.db_client[database_name]
 
     @classmethod
     async def connect_db(cls):
@@ -19,7 +20,8 @@ class Database:
         cls.db_client = AsyncIOMotorClient(db_string)
 
         if cls.testing:
-            await cls.db_client.drop_database(cls.get_db_name())
+            database_name = await cls.get_db_name()
+            await cls.db_client.drop_database(database_name)
 
         await cls.generate_indexes()
 
