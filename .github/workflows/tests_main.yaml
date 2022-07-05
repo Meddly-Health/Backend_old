@@ -24,5 +24,6 @@ jobs:
           MEDDLY_FIREBASE_JSON: ${{ secrets.MEDDLY_FIREBASE_JSON }}
           MEDDLY_FIREBASE_KEY: ${{ secrets.MEDDLY_FIREBASE_KEY }}
           MEDDLY_FIREBASE_PRIVATE_KEY: ${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}
+          MEDDLY_ENV_NAME: 'production'
         run: |
           pytest
