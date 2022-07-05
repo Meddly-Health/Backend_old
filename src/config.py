@@ -51,5 +51,5 @@ metadata = {
         "name": f"{title} Team",
         "email": "ignacio.pieve@gmail.com",
     },
-    "description": description
+    "description": description,
 }
