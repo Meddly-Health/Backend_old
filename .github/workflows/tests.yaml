@@ -1,8 +1,9 @@
-name: Main Tests
+name: Dev Tests
 
 on:
   push:
-    branches: ["main"]
+    branches: ["dev/**"]
+  workflow_dispatch:
 
 jobs:
   tests:
@@ -24,6 +25,6 @@ jobs:
           MEDDLY_FIREBASE_JSON: ${{ secrets.MEDDLY_FIREBASE_JSON }}
           MEDDLY_FIREBASE_KEY: ${{ secrets.MEDDLY_FIREBASE_KEY }}
           MEDDLY_FIREBASE_PRIVATE_KEY: ${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}
-          MEDDLY_ENV_NAME: 'production'
+          MEDDLY_ENV_NAME: 'dev'
         run: |
           pytest
