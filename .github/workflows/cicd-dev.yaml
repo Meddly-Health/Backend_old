@@ -9,32 +9,8 @@ on:
     branches: ["dev"]
 
 jobs:
-  tests:
-    name: "Run Tests"
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: "3.10"
-          architecture: x64
-      - name: Install dependencies
-        run: |
-          pip3 install -r requirements.txt
-      - name: Run tests
-        env:
-          MEDDLY_DB_STRING: ${{ secrets.MEDDLY_DB_STRING }}
-          MEDDLY_FIREBASE_JSON: ${{ secrets.MEDDLY_FIREBASE_JSON }}
-          MEDDLY_FIREBASE_KEY: ${{ secrets.MEDDLY_FIREBASE_KEY }}
-          MEDDLY_FIREBASE_PRIVATE_KEY: ${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}
-        run: |
-          pytest
-
   push_image:
     name: "Push Docker image to Docker Hub"
-    needs: tests
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -55,7 +31,6 @@ jobs:
   deploy:
     name: "Deploy to EC2"
     runs-on: ubuntu-latest
-    needs: tests
     steps:
       - name: Configurar SSH
         run: |
@@ -99,3 +74,4 @@ jobs:
           --env MEDDLY_FIREBASE_JSON='${{ secrets.MEDDLY_FIREBASE_JSON }}'
           --env MEDDLY_FIREBASE_KEY='${{ secrets.MEDDLY_FIREBASE_KEY }}'
           --env MEDDLY_FIREBASE_PRIVATE_KEY='${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}' meddly-dev"
+          --env MEDDLY_ENV_NAME='dev'
