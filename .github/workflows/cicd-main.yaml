@@ -72,5 +72,5 @@ jobs:
           --env MEDDLY_DB_STRING='${{ secrets.MEDDLY_DB_STRING }}'
           --env MEDDLY_FIREBASE_JSON='${{ secrets.MEDDLY_FIREBASE_JSON }}'
           --env MEDDLY_FIREBASE_KEY='${{ secrets.MEDDLY_FIREBASE_KEY }}'
-          --env MEDDLY_FIREBASE_PRIVATE_KEY='${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}' meddly"
-          --env MEDDLY_ENV_NAME='production'
+          --env MEDDLY_FIREBASE_PRIVATE_KEY='${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}'
+          --env MEDDLY_ENV_NAME='production' meddly"
