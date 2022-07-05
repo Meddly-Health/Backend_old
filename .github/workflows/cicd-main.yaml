@@ -88,8 +88,9 @@ jobs:
         run: ssh staging 'cd /home/ubuntu/Meddly && docker build -t meddly .'
 
       - name: Add private IP
+        continue-on-error: true
         run: >
-          ssh staging "sudo ip addr add ${{ secrets.MAIN_PRIVATE_IP }}/20 dev eth0" || echo "Already added"
+          ssh staging "sudo ip addr add ${{ secrets.MAIN_PRIVATE_IP }}/20 dev eth0"
 
       - name: Run container
         run: >
