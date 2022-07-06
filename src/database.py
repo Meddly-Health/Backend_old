@@ -56,7 +56,9 @@ if __name__ == "__main__":
         db = await Database.get_db()
 
         # ZONA DE PRUEBAS
-
+        tratamientos = await db["user"].find_one(
+            {"_id": "Ts5IawbjS8cqNlgn0Hw0rYc4YRX2"}, {"treatments": 1}
+        )
         # ZONA DE PRUEBAS
 
     asyncio.run(main())

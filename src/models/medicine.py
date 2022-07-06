@@ -1,3 +1,4 @@
+import calendar
 import datetime
 from typing import Literal
 
@@ -30,6 +31,9 @@ class ConsumptionRule:
                     detail="The treatment has expired",
                 )
 
+    def get_proyections(self, interval: int):
+        pass
+
     @staticmethod
     def get_consumption_rule(consumption_rule):
         if consumption_rule["name"] == "need_it":
@@ -61,6 +65,9 @@ class NeedIt(ConsumptionRule):
     def __init__(self, start: datetime.datetime, end: datetime.datetime = None):
         super().__init__(start, end)
 
+    def get_proyections(self, interval: int):
+        pass
+
     def validate(self, consumption: NewConsumption):
         super().validate(consumption)
         return True
@@ -76,10 +83,30 @@ class EveryDay(ConsumptionRule):
         super().__init__(start, end)
         self.hours = hours
 
+    def get_proyections(self, interval: int):
+        proyections = {}
+        today = datetime.datetime.now()
+        for i in range(-interval, interval):
+            day = today + relativedelta(days=i)
+            proyections[day.strftime("%Y-%m-%d")] = []
+            for hour in self.hours:
+                proyections[day.strftime("%Y-%m-%d")].append(hour.strftime("%H:%M"))
+        return proyections
+
     def validate(self, consumption: NewConsumption):
         super().validate(consumption)
-        # TODO: Implementar @leilaspini
-        return True
+
+        for hour in self.hours:
+            correct_hour = consumption.consumption_date.hour == hour.hour
+            correct_minute = consumption.consumption_date.minute == hour.minute
+            correct_time = correct_hour and correct_minute
+            if correct_time:
+                return True
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Consumption date is not on the correct time",
+        )
 
 
 class EveryXDays(ConsumptionRule):
@@ -88,6 +115,16 @@ class EveryXDays(ConsumptionRule):
     ):
         super().__init__(start, end)
         self.number = number
+
+    def get_proyections(self, interval: int):
+        proyections = {}
+        today = datetime.datetime.now()
+        for i in range(-interval, interval):
+            day = today + relativedelta(days=i)
+            correct_day = (relativedelta(self.start, day).days % self.number) == 0
+            if correct_day:
+                proyections[day.strftime("%Y-%m-%d")] = [self.start.strftime("%H:%M")]
+        return proyections
 
     def validate(self, consumption: NewConsumption):
         super().validate(consumption)
@@ -130,9 +167,39 @@ class SpecificDays(ConsumptionRule):
         super().__init__(start, end)
         self.days = days
 
+    def get_proyections(self, interval: int):
+        proyections = {}
+        today = datetime.datetime.now()
+        for i in range(-interval, interval):
+            day = today + relativedelta(days=i)
+            correct_day = calendar.day_name[day.weekday()].lower() in self.days
+            if correct_day:
+                proyections[day.strftime("%Y-%m-%d")] = [self.start.strftime("%H:%M")]
+        return proyections
+
     def validate(self, consumption: NewConsumption):
         super().validate(consumption)
-        # TODO: Implementar @leilaspini
+
+        correct_day = (
+            calendar.day_name[consumption.consumption_date.weekday()].lower()
+            in self.days
+        )
+
+        if not correct_day:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Consumption date is not on the correct day",
+            )
+
+        correct_hour = consumption.consumption_date.hour == self.start.hour
+        correct_minute = consumption.consumption_date.minute == self.start.minute
+        correct_time = correct_hour and correct_minute
+        if not correct_time:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Consumption date is not on the correct time",
+            )
+
         return True
 
 
@@ -178,7 +245,7 @@ class Treatment:
                 {"_id": self.user["user_id"]},
                 {
                     "$set": {
-                        f"treatments.{self.treatment_id}.history.{str(consumption.consumption_date.date())}.{f'{consumption.consumption_date.hour}:{consumption.consumption_date.minute}'}": True
+                        f"treatments.{self.treatment_id}.history.{str(consumption.consumption_date.date())}.{consumption.consumption_date.strftime('%H:%M')}": True
                     }
                 },
             )
@@ -187,3 +254,39 @@ class Treatment:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Consumption time or date is not valid",
             )
+
+    async def get_treatment_cleaned(self):
+        treatment = self.treatment
+        old_history = treatment["history"]
+        new_history = {}
+        consumption_rule = await self.get_consumption_rule()
+        proyections = consumption_rule.get_proyections(interval=15)
+        for day in proyections:
+            new_history[day] = {}
+            for hour in proyections[day]:
+                try:
+                    new_history[day][hour] = old_history[day][hour]
+                except KeyError:
+                    new_history[day][hour] = False
+        treatment["history"] = new_history
+        return treatment
+
+    @staticmethod
+    async def get_treatments(db, user):
+        # TODO: Esto hay que optimizarlo para que traiga solamente las claves primarias. UwU.
+        treatments = await db["user"].find_one(
+            {
+                "_id": user["user_id"],
+            },
+            {"treatments": 1},
+        )
+        treatments = treatments["treatments"]
+        treatments_list = []
+        for treatment_id in treatments:
+            treatment = Treatment()
+            await treatment.load(db, user, treatment_id)
+            treatment_json = await treatment.get_treatment_cleaned()
+            treatment_json["id"] = treatment.treatment_id
+            treatments_list.append(treatment_json)
+        # Soy una bestia.
+        return treatments_list
