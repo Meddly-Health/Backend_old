@@ -13,12 +13,25 @@ class ConsumptionRule(BaseModel):
 
 
 class NeedIt(ConsumptionRule):
-    # TODO: Explicar que significa esto @leilaspini
+    """
+        Esta regla se aplica cuando el usuario indica que necesita consumir el medicamento
+    """
+
     name: Literal["need_it"]
 
 
 class EveryDay(ConsumptionRule):
-    # TODO: Explicar que significa esto @leilaspini
+    """
+        Esta regla de consumo se aplica todos los días, por ejemplo:
+            Si el medicamento se debe aplicar todos los días a las 11.00 y a las 23.00 (hours = [11.00, 23.00]), a partir del Lunes 1 de Junio,
+            las próximas fechas válidas para aplicar el medicamento son:
+                - Martes 2 de Junio a las 11.00 y luego las 23.00
+                - Miércoles 3 de Junio a las 11.00 y luego las 23.00
+                - Jueves 4 de Junio a las 11.00 y luego las 23.00
+                - Viernes 5 de Junio a las 11.00 y luego las 23.00
+                - etc...
+    """
+
     name: Literal["every_day"]
     hours: list[datetime.time]
 
@@ -39,7 +52,16 @@ class EveryXDay(ConsumptionRule):
 
 
 class SpecificDays(ConsumptionRule):
-    # TODO: Explicar que significa esto @leilaspini
+    """
+        Esta regla de consumo se aplica en días específicos, por ejemplo:
+            Si el medicamento se debe aplicar los días Martes, Jueves y Sábado (days = ["tuesday", "thursday", "saturday"]), a partir del Martes 2 de Junio a las 17.30,
+            las próximas fechas válidas para aplicar el medicamento son:
+                - Jueves 4 de Junio a las 17.30
+                - Sábado 6 de Junio a las 17.30
+                - Martes 9 de Junio a las 17.30
+                - etc...
+    """
+
     name: Literal["specific_days"]
     days: list[
         Literal[

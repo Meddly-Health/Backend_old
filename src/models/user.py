@@ -204,7 +204,9 @@ class User:
         return code
 
     async def get_treatments(self):
-        pass
+        treatments = Treatment()
+        treatments = await treatments.get_treatments(self.db, self.user)
+        return treatments
 
     async def add_treatment(self, treatment: TreatmentModel):
         treatment = jsonable_encoder(treatment)

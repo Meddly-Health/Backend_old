@@ -37,10 +37,8 @@ async def get_treatments(
     #       No solamente las consumiciones que se han marcado (en la base de datos solamente guardamos las consumidas,
     #       pero hay que devolver las no consumidas tambien).
 
-    # treatments = await User(db, user).get_treatments()
-    # return treatments
-    pass
-
+    treatments = await User(db, user).get_treatments()
+    return treatments
 
 @router.post(
     "/{treatment_id}/consumption", status_code=201, summary="Add a consumption"
