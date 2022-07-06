@@ -75,10 +75,10 @@ class NeedIt(ConsumptionRule):
 
 class EveryDay(ConsumptionRule):
     def __init__(
-            self,
-            start: datetime.datetime,
-            hours: list[datetime.time],
-            end: datetime.datetime = None,
+        self,
+        start: datetime.datetime,
+        hours: list[datetime.time],
+        end: datetime.datetime = None,
     ):
         super().__init__(start, end)
         self.hours = hours
@@ -90,9 +90,7 @@ class EveryDay(ConsumptionRule):
             day = today + relativedelta(days=i)
             proyections[day.strftime("%Y-%m-%d")] = []
             for hour in self.hours:
-                proyections[day.strftime("%Y-%m-%d")].append(
-                    hour.strftime("%H:%M")
-                )
+                proyections[day.strftime("%Y-%m-%d")].append(hour.strftime("%H:%M"))
         return proyections
 
     def validate(self, consumption: NewConsumption):
@@ -113,7 +111,7 @@ class EveryDay(ConsumptionRule):
 
 class EveryXDays(ConsumptionRule):
     def __init__(
-            self, start: datetime.datetime, number: int, end: datetime.datetime = None
+        self, start: datetime.datetime, number: int, end: datetime.datetime = None
     ):
         super().__init__(start, end)
         self.number = number
@@ -131,8 +129,8 @@ class EveryXDays(ConsumptionRule):
     def validate(self, consumption: NewConsumption):
         super().validate(consumption)
         correct_day = (
-                              relativedelta(self.start, consumption.consumption_date).days % self.number
-                      ) == 0
+            relativedelta(self.start, consumption.consumption_date).days % self.number
+        ) == 0
         if not correct_day:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -151,20 +149,20 @@ class EveryXDays(ConsumptionRule):
 
 class SpecificDays(ConsumptionRule):
     def __init__(
-            self,
-            start: datetime.datetime,
-            days: list[
-                Literal[
-                    "monday",
-                    "tuesday",
-                    "wednesday",
-                    "thursday",
-                    "friday",
-                    "saturday",
-                    "sunday",
-                ]
-            ],
-            end: datetime.datetime = None,
+        self,
+        start: datetime.datetime,
+        days: list[
+            Literal[
+                "monday",
+                "tuesday",
+                "wednesday",
+                "thursday",
+                "friday",
+                "saturday",
+                "sunday",
+            ]
+        ],
+        end: datetime.datetime = None,
     ):
         super().__init__(start, end)
         self.days = days
@@ -182,7 +180,10 @@ class SpecificDays(ConsumptionRule):
     def validate(self, consumption: NewConsumption):
         super().validate(consumption)
 
-        correct_day = calendar.day_name[consumption.consumption_date.weekday()].lower() in self.days
+        correct_day = (
+            calendar.day_name[consumption.consumption_date.weekday()].lower()
+            in self.days
+        )
 
         if not correct_day:
             raise HTTPException(
@@ -273,14 +274,19 @@ class Treatment:
     @staticmethod
     async def get_treatments(db, user):
         # TODO: Esto hay que optimizarlo para que traiga solamente las claves primarias. UwU.
-        treatments = await db["user"].find_one({'_id': user['user_id'], }, {'treatments': 1})
-        treatments = treatments['treatments']
+        treatments = await db["user"].find_one(
+            {
+                "_id": user["user_id"],
+            },
+            {"treatments": 1},
+        )
+        treatments = treatments["treatments"]
         treatments_list = []
         for treatment_id in treatments:
             treatment = Treatment()
             await treatment.load(db, user, treatment_id)
             treatment_json = await treatment.get_treatment_cleaned()
-            treatment_json['id'] = treatment.treatment_id
+            treatment_json["id"] = treatment.treatment_id
             treatments_list.append(treatment_json)
         # Soy una bestia.
         return treatments_list

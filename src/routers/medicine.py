@@ -40,6 +40,7 @@ async def get_treatments(
     treatments = await User(db, user).get_treatments()
     return treatments
 
+
 @router.post(
     "/{treatment_id}/consumption", status_code=201, summary="Add a consumption"
 )
