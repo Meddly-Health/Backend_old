@@ -1,4 +1,4 @@
-# 💊 Meddly
+# 💊 Meddly 
 
 [![CI/CD WorkFlow (main)](https://github.com/Meddly-Health/Backend/actions/workflows/cicd-main.yaml/badge.svg)](https://github.com/Meddly-Health/Backend/actions/workflows/cicd-main.yaml)
 [![Code Lint](https://github.com/Meddly-Health/Backend/actions/workflows/lint.yaml/badge.svg)](https://github.com/Meddly-Health/Backend/actions/workflows/lint.yaml)
