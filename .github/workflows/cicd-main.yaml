@@ -84,7 +84,7 @@ jobs:
           ssh staging 'docker rmi meddly' || true
 
       - name: Build image
-        run: ssh staging 'cd /home/ubuntu/Meddly && docker build -t meddly .'
+        run: ssh staging 'cd ~/Meddly && docker build -t meddly .'
 
       - name: Add private IP
         continue-on-error: true
