@@ -75,7 +75,7 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
       - name: Pull changes
         run: |
-          ssh staging 'cd /home/ubuntu/Meddly-dev && git pull'
+          ssh staging 'cd ~/Meddly-dev && git pull'
       - name: Stop Container
         run: ssh staging 'docker stop meddly-dev-container' || true
 
