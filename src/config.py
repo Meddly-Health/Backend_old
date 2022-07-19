@@ -29,6 +29,7 @@ firebase = {**firebase_json, "private_key": firebase_private_key}
 firebase_key = os.getenv("MEDDLY_FIREBASE_KEY")
 # ENV_NAME is the name of the environment. It can be "local-dev", "dev" or "prod"
 env_name = os.getenv("MEDDLY_ENV_NAME")
+sendgrid_key = os.getenv("MEDDLY_SENDGRID_KEY")
 
 # ---------- METADATA ----------
 title = "Meddly"
