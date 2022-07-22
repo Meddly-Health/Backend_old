@@ -91,6 +91,6 @@ class UserModel(BaseModel):
                 "sex": "M",
                 "birth": "2022-04-12T03:31:19.122000",
                 "avatar": "avatar1",
-                "active_notifications": ["email", "whatsapp"]
+                "active_notifications": ["email", "whatsapp"],
             }
         }

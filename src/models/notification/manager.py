@@ -16,5 +16,7 @@ class NotificationManager:
 
 async def get_manager(user):
     db = await Database.get_db()
-    active_notifications = db['user'].find_one({"_id": user["user_id"]}, {"active_notifications": 1})
+    active_notifications = db["user"].find_one(
+        {"_id": user["user_id"]}, {"active_notifications": 1}
+    )
     return NotificationManager(active_notifications["active_notifications"])

@@ -229,5 +229,3 @@ class User:
     async def send_notification(self, notification: Notification):
         manager = await get_manager(self.user)
         manager.send_notification(notification)
-
-
