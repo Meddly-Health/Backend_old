@@ -32,6 +32,7 @@ class UserUpdateModel(BaseModel):
     sex: str | None
     birth: datetime.datetime | None
     avatar: str | None
+    phone: str | None
 
 
 class UserModel(BaseModel):
@@ -43,6 +44,7 @@ class UserModel(BaseModel):
     diseases: list[str]
     supervisors: list[SupervisorModel]
     supervised: list[SupervisorModel]
+    # TODO: Poner opciones de active_notifications
     active_notifications: list[str]
     invitation: str
 
@@ -54,6 +56,7 @@ class UserModel(BaseModel):
     sex: str | None
     birth: datetime.datetime | None
     avatar: str | None
+    phone: str | None
 
     class Config:
         allow_population_by_field_name = True
@@ -92,5 +95,6 @@ class UserModel(BaseModel):
                 "birth": "2022-04-12T03:31:19.122000",
                 "avatar": "avatar1",
                 "active_notifications": ["email", "whatsapp"],
+                "phone": "+5493513456789"
             }
         }

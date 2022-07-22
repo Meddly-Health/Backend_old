@@ -9,7 +9,7 @@ from starlette import status
 
 from models.medicine import Treatment
 from models.notification.manager import get_manager
-from models.notification.notification import Notification
+from models.notification.notification import Notification, NewSupervisorNotification
 from schemas.medicine import NewConsumption, TreatmentModel
 
 
@@ -84,6 +84,10 @@ class User:
         ]
         user = (await self.db["user"].aggregate(pipeline).to_list(length=1))[0]
         return user
+
+    async def get_contact_data(self):
+        contact_data = await self.db["user"].find_one({"_id": self.user["user_id"]}, {"email": 1, "phone": 1})
+        return contact_data
 
     async def update(self, user_data):
         user_data = jsonable_encoder(user_data)
@@ -173,6 +177,11 @@ class User:
             await self.db["user"].update_one(
                 {"_id": supervisor["_id"]}, {"$set": supervisor}
             )
+
+            # Notifications
+            contact_data = await self.get_contact_data()
+            notification = NewSupervisorNotification(contact_data, supervisor_name=supervisor.get('first_name', None))
+            await self.send_notification(notification)
 
             return {"status": "ok"}
 
