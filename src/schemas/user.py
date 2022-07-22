@@ -43,6 +43,7 @@ class UserModel(BaseModel):
     diseases: list[str]
     supervisors: list[SupervisorModel]
     supervised: list[SupervisorModel]
+    active_notifications: list[str]
     invitation: str
 
     # Atributos opcionales
@@ -90,5 +91,6 @@ class UserModel(BaseModel):
                 "sex": "M",
                 "birth": "2022-04-12T03:31:19.122000",
                 "avatar": "avatar1",
+                "active_notifications": ["email", "whatsapp"]
             }
         }

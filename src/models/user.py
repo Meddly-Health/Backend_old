@@ -8,6 +8,8 @@ from fastapi.encoders import jsonable_encoder
 from starlette import status
 
 from models.medicine import Treatment
+from models.notification.manager import get_manager
+from models.notification.notification import Notification
 from schemas.medicine import NewConsumption, TreatmentModel
 
 
@@ -32,6 +34,7 @@ class User:
                 "supervisors": [],
                 "supervised": [],
                 "treatments": {},
+                "active_notifications": [],
                 "invitation": await self.generate_code(),
             }
             await self.db["user"].insert_one(user)
@@ -222,3 +225,9 @@ class User:
         await treatment.load(self.db, self.user, treatment_id)
         await treatment.add_consumption(consumption)
         return {"status": "ok"}
+
+    async def send_notification(self, notification: Notification):
+        manager = await get_manager(self.user)
+        manager.send_notification(notification)
+
+

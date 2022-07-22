@@ -1,7 +1,9 @@
-import datetime
-
 from motor.motor_asyncio import AsyncIOMotorClient
-
+if __name__ == "__main__":
+    try:
+        import set_environ
+    except ModuleNotFoundError:
+        pass
 from config import db_name, db_string, env_name
 
 
@@ -56,9 +58,7 @@ if __name__ == "__main__":
         db = await Database.get_db()
 
         # ZONA DE PRUEBAS
-        tratamientos = await db["user"].find_one(
-            {"_id": "Ts5IawbjS8cqNlgn0Hw0rYc4YRX2"}, {"treatments": 1}
-        )
+
         # ZONA DE PRUEBAS
 
     asyncio.run(main())
