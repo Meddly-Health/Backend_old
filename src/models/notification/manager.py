@@ -1,4 +1,4 @@
-from sender import get_sender
+from models.notification.sender import get_sender
 from database import Database
 
 
