@@ -17,9 +17,9 @@ class Email(NotificationSender):
     def send_notification(self, notification):
         data = notification.get_email_data()
 
-        message = Mail(from_email=config.sendgrid_email, to_emails=data['to'])
-        message.dynamic_template_data = data['template_data']
-        message.template_id = data['template_id']
+        message = Mail(from_email=config.sendgrid_email, to_emails=data["to"])
+        message.dynamic_template_data = data["template_data"]
+        message.template_id = data["template_id"]
         try:
             sg = SendGridAPIClient(config.sendgrid_key)
             sg.send(message)

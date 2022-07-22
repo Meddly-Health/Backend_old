@@ -38,23 +38,18 @@ class NewSupervisorNotification(Notification):
 
     def get_whatsapp_data(self):
         if self.supervisor_name:
-            message = f'Se ha agregado a {self.supervisor_name} como supervisor.'
+            message = f"Se ha agregado a {self.supervisor_name} como supervisor."
         else:
-            message = 'Se ha agregado a un nuevo supervisor.'
+            message = "Se ha agregado a un nuevo supervisor."
 
-        return {
-            'to': self.contact_data["whatsapp"],
-            'message': message
-        }
+        return {"to": self.contact_data["whatsapp"], "message": message}
 
     def get_email_data(self):
-        template_id = 'd-5e634cd5cd6548b4b440f188c1d2a40a'
+        template_id = "d-5e634cd5cd6548b4b440f188c1d2a40a"
         return {
             "to": self.contact_data["email"],
             "template_id": template_id,
-            "template_data": {
-                "supervisor_name": self.supervisor_name
-            }
+            "template_data": {"supervisor_name": self.supervisor_name},
         }
 
 

@@ -86,7 +86,9 @@ class User:
         return user
 
     async def get_contact_data(self):
-        contact_data = await self.db["user"].find_one({"_id": self.user["user_id"]}, {"email": 1, "phone": 1})
+        contact_data = await self.db["user"].find_one(
+            {"_id": self.user["user_id"]}, {"email": 1, "phone": 1}
+        )
         return contact_data
 
     async def update(self, user_data):
@@ -180,7 +182,9 @@ class User:
 
             # Notifications
             contact_data = await self.get_contact_data()
-            notification = NewSupervisorNotification(contact_data, supervisor_name=supervisor.get('first_name', None))
+            notification = NewSupervisorNotification(
+                contact_data, supervisor_name=supervisor.get("first_name", None)
+            )
             await self.send_notification(notification)
 
             return {"status": "ok"}

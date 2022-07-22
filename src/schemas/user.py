@@ -95,6 +95,6 @@ class UserModel(BaseModel):
                 "birth": "2022-04-12T03:31:19.122000",
                 "avatar": "avatar1",
                 "active_notifications": ["email", "whatsapp"],
-                "phone": "+5493513456789"
+                "phone": "+5493513456789",
             }
         }
