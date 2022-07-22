@@ -9,7 +9,8 @@ from starlette import status
 
 from models.medicine import Treatment
 from models.notification.manager import get_manager
-from models.notification.notification import Notification, NewSupervisorNotification
+from models.notification.notification import (NewSupervisorNotification,
+                                              Notification)
 from schemas.medicine import NewConsumption, TreatmentModel
 
 

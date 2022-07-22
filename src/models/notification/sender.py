@@ -1,7 +1,8 @@
-import config
-from models.notification.notification import Notification
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+
+import config
+from models.notification.notification import Notification
 
 
 class NotificationSender:
