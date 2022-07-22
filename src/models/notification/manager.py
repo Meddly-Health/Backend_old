@@ -1,5 +1,5 @@
-from models.notification.sender import get_sender
 from database import Database
+from models.notification.sender import get_sender
 
 
 class NotificationManager:
