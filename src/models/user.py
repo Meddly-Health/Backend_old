@@ -11,7 +11,7 @@ from models.medicine import Treatment
 from models.notification.manager import get_manager
 from models.notification.notification import (NewSupervisorNotification,
                                               Notification)
-from schemas.medicine import NewConsumption, TreatmentModel
+from schemas.medicine import NewConsumption, TreatmentModel, TreatmentUpdateModel
 
 
 class User:
@@ -224,6 +224,15 @@ class User:
         treatments = Treatment()
         treatments = await treatments.get_treatments(self.db, self.user)
         return treatments
+
+    async def update_treatment(self, treatment_id: str, treatment: TreatmentUpdateModel):
+        treatment_new = jsonable_encoder(treatment)
+
+        await self.db["user"].update_one(
+            {"_id": self.user["user_id"]},
+            {"$set": {f"treatments.{treatment_id}": treatment_new}}
+        )
+        return {"status": "ok"}
 
     async def add_treatment(self, treatment: TreatmentModel):
         treatment = jsonable_encoder(treatment)

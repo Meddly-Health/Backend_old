@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from database import Database
 from dependencies import auth
 from models.user import User
-from schemas.medicine import NewConsumption, TreatmentModel
+from schemas.medicine import NewConsumption, TreatmentModel, TreatmentUpdateModel
 
 router = APIRouter(prefix="/treatment", tags=["Treatment"])
 
@@ -39,6 +39,20 @@ async def get_treatments(
 
     treatments = await User(db, user).get_treatments()
     return treatments
+
+
+@router.post("/{treatment_id}", status_code=200, summary="Update treatment")
+async def update_treatment(
+        treatment_id: str,
+        treatment: TreatmentUpdateModel,
+        user=Depends(auth.authenticate),
+        db=Depends(Database.get_db),
+):
+    """
+    Actualiza los datos del tratamiento (sobreescribiendo el objeto por completo)
+    """
+    treatment = await User(db, user).update_treatment(treatment_id, treatment)
+    return treatment
 
 
 @router.post(

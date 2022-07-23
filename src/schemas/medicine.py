@@ -101,6 +101,14 @@ class TreatmentIndication(BaseModel):
     instructions: str | None
 
 
+class TreatmentUpdateModel(BaseModel):
+    medicine: Medicine
+    treatment_indication: TreatmentIndication
+
+    stock: int | None
+    stock_warning: int | None
+
+
 class TreatmentModel(BaseModel):
     medicine: Medicine
     treatment_indication: TreatmentIndication
