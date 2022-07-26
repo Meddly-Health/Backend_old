@@ -7,7 +7,7 @@ from fastapi import FastAPI
 
 import config
 from database import Database
-from routers import medicine, supervisors, test, user
+from routers import medicine, supervisors, test, user, notifications
 from utils import LoggingMiddleware
 
 app = FastAPI(**config.metadata)
@@ -15,6 +15,7 @@ app = FastAPI(**config.metadata)
 app.include_router(user.router)
 app.include_router(supervisors.router)
 app.include_router(medicine.router)
+app.include_router(notifications.router)
 app.include_router(test.router)
 
 
