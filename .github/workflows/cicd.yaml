@@ -75,7 +75,7 @@ jobs:
         run: |
           ssh staging 'cd ~/Meddly && git pull'
       - name: Stop Container
-        run: ssh staging 'docker stop meddly-container' || true
+        run: ssh staging 'docker stop meddly' || true
 
       - name: Delete container and image
         run: |
@@ -85,7 +85,8 @@ jobs:
       - name: Build image
         run: ssh staging 'cd ~/Meddly && docker build -t meddly .'
 
-      - name: Run container
+      - name: Run container in production
+        if: github.ref == 'refs/heads/main'
         run: >
           ssh staging "docker run -d --name meddly -p 80:8000
           --env MEDDLY_DB_STRING='${{ secrets.MEDDLY_DB_STRING }}'
@@ -93,3 +94,13 @@ jobs:
           --env MEDDLY_FIREBASE_KEY='${{ secrets.MEDDLY_FIREBASE_KEY }}'
           --env MEDDLY_FIREBASE_PRIVATE_KEY='${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}'
           --env MEDDLY_ENV_NAME='production' meddly"
+
+      - name: Run container in dev
+        if: github.ref == 'refs/heads/dev'
+        run: >
+          ssh staging "docker run -d --name meddly -p 80:8000
+          --env MEDDLY_DB_STRING='${{ secrets.MEDDLY_DB_STRING }}'
+          --env MEDDLY_FIREBASE_JSON='${{ secrets.MEDDLY_FIREBASE_JSON }}'
+          --env MEDDLY_FIREBASE_KEY='${{ secrets.MEDDLY_FIREBASE_KEY }}'
+          --env MEDDLY_FIREBASE_PRIVATE_KEY='${{ secrets.MEDDLY_FIREBASE_PRIVATE_KEY }}'
+          --env MEDDLY_ENV_NAME='dev' meddly"
