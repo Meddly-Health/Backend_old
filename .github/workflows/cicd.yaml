@@ -79,7 +79,7 @@ jobs:
 
       - name: Delete container and image
         run: |
-          ssh staging 'docker rm meddly-container' || true
+          ssh staging 'docker rm meddly' || true
           ssh staging 'docker rmi meddly' || true
 
       - name: Build image
