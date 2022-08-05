@@ -1,2 +1,0 @@
-- En las funciones de los modelos, asegurarse de que la base de datos traiga solamente los datos que se necesitan
-(para asegurar eficiencia)

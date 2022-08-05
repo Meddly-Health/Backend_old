@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends
 import config
 from dependencies import auth
 from schemas.test import UserRequestModel
-from utils import LoggingMiddleware
 
 router = APIRouter(prefix="/test", tags=["Test"])
 
@@ -35,8 +34,3 @@ def register(user: UserRequestModel):
     url = f"https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key={config.firebase_key}"
     response = requests.post(url, json=user)
     return {"status": "ok", "token": response.json()["idToken"]}
-
-
-@router.get("/logs")
-def logs():
-    return LoggingMiddleware.logs
