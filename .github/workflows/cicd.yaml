@@ -1,4 +1,4 @@
-name: CI/CD WorkFlow (main)
+name: CI/CD WorkFlow
 
 on:
   pull_request_target:
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configurar SSH para Main
-        if: github.event.pull_request.base.ref == 'main'
+        if: ${GITHUB_REF##*/} == 'main'
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/staging.key
@@ -55,7 +55,7 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ secrets.SSH_HOST_MAIN }}
       - name: Configurar SSH para Dev
-        if: github.event.pull_request.base.ref == 'dev'
+        if: ${GITHUB_REF##*/} == 'dev'
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/staging.key
