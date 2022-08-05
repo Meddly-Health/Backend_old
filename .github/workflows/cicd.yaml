@@ -2,7 +2,7 @@ name: CI/CD WorkFlow (main)
 
 on:
   pull_request_target:
-    branches: ["main"]
+    branches: ["main", "dev"]
     types:
       - closed
   workflow_dispatch:
@@ -31,32 +31,14 @@ jobs:
           MEDDLY_ENV_NAME: 'production'
         run: |
           pytest
-  push_image:
-    name: "Push Docker image to Docker Hub"
-    needs: tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: ignaciopieve/meddly-back:latest
 
   deploy:
     name: "Deploy to EC2"
     needs: tests
     runs-on: ubuntu-latest
     steps:
-      - name: Configurar SSH
+      - name: Configurar SSH para Main
+        if: github.event.pull_request.base.ref == 'main'
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_KEY" > ~/.ssh/staging.key
@@ -71,7 +53,24 @@ jobs:
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_HOST: ${{ secrets.SSH_HOST_MAIN }}
+      - name: Configurar SSH para Dev
+        if: github.event.pull_request.base.ref == 'dev'
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST_DEV }}
       - name: Pull changes
         run: |
           ssh staging 'cd ~/Meddly && git pull'
@@ -86,14 +85,9 @@ jobs:
       - name: Build image
         run: ssh staging 'cd ~/Meddly && docker build -t meddly .'
 
-      - name: Add private IP
-        continue-on-error: true
-        run: >
-          ssh staging "sudo ip addr add ${{ secrets.MAIN_PRIVATE_IP }}/20 dev eth0"
-
       - name: Run container
         run: >
-          ssh staging "docker run -d --name meddly-container -p ${{ secrets.MAIN_PRIVATE_IP }}:80:8000
+          ssh staging "docker run -d --name meddly -p 80:8000
           --env MEDDLY_DB_STRING='${{ secrets.MEDDLY_DB_STRING }}'
           --env MEDDLY_FIREBASE_JSON='${{ secrets.MEDDLY_FIREBASE_JSON }}'
           --env MEDDLY_FIREBASE_KEY='${{ secrets.MEDDLY_FIREBASE_KEY }}'
